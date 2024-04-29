@@ -1,6 +1,6 @@
-> Lint your commits, angular-style
-
 # @commitlint/config-angular
+
+Lint your commits, angular-style
 
 Shareable `commitlint` config enforcing the [Angular commit convention](https://github.com/angular/angular/blob/master/CONTRIBUTING.md#commit).
 Use with [@commitlint/cli](../cli) and [@commitlint/prompt-cli](../prompt-cli).
@@ -9,7 +9,7 @@ Use with [@commitlint/cli](../cli) and [@commitlint/prompt-cli](../prompt-cli).
 
 ```sh
 npm install --save-dev @commitlint/config-angular @commitlint/cli
-echo "module.exports = {extends: ['@commitlint/config-angular']};" > commitlint.config.js
+echo "export default {extends: ['@commitlint/config-angular']};" > commitlint.config.js
 ```
 
 ## Rules
@@ -17,7 +17,7 @@ echo "module.exports = {extends: ['@commitlint/config-angular']};" > commitlint.
 ### Problems
 
 The following rules are considered problems for `@commitlint/config-angular` and will yield a non-zero exit code when not met.
-Consult [docs/rules](https://conventional-changelog.github.io/commitlint/#/reference-rules) for a list of available rules.
+Consult [Rules reference](https://commitlint.js.org/reference/rules) for a list of available rules.
 
 #### type-enum
 
@@ -129,7 +129,7 @@ echo "fix: some message" # passes
 
 The [angular commit
 convention](hhttps://github.com/angular/angular/blob/master/CONTRIBUTING.md#commit)
-dose not use a `!` to define a breaking change in the commit subject. If you
+does not use a `!` to define a breaking change in the commit subject. If you
 want to use this feature please consider using the [conventional commit
 config](https://github.com/conventional-changelog/commitlint/tree/master/%40commitlint/config-conventional#commitlintconfig-conventional).
 

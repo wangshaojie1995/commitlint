@@ -1,5 +1,9 @@
+import {test, expect} from 'vitest';
+import {createRequire} from 'module';
 import {git} from '@commitlint/test';
-import execa from 'execa';
+import {execa} from 'execa';
+
+const require = createRequire(import.meta.url);
 
 const bin = require.resolve('./cli.js');
 
@@ -19,4 +23,4 @@ test('should print warning if stage is empty', async () => {
 	const actual = await cli([], {cwd})('foo: bar');
 	expect(actual.stdout).toContain('Nothing to commit.');
 	expect(actual.stderr).toBe('');
-});
+}, 10000);

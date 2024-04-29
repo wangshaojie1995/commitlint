@@ -1,6 +1,7 @@
 {
   "name": "@commitlint/load",
-  "version": "13.1.0",
+  "type": "module",
+  "version": "19.2.0",
   "description": "Load shared commitlint configuration",
   "main": "lib/load.js",
   "types": "lib/load.d.ts",
@@ -12,16 +13,17 @@
     "pkg": "pkg-check --skip-import"
   },
   "engines": {
-    "node": ">=v12"
+    "node": ">=v18"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/conventional-changelog/commitlint.git"
+    "url": "https://github.com/conventional-changelog/commitlint.git",
+    "directory": "@commitlint/load"
   },
   "bugs": {
     "url": "https://github.com/conventional-changelog/commitlint/issues"
   },
-  "homepage": "https://github.com/conventional-changelog/commitlint#readme",
+  "homepage": "https://commitlint.js.org/",
   "keywords": [
     "conventional-changelog",
     "commitlint",
@@ -34,21 +36,25 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@commitlint/test": "^13.0.0",
-    "@commitlint/utils": "^13.0.0",
-    "@types/lodash": "4.14.172",
-    "conventional-changelog-atom": "^2.0.8",
-    "execa": "^5.0.0"
+    "@commitlint/test": "^19.0.0",
+    "@types/lodash.isplainobject": "^4.0.8",
+    "@types/lodash.merge": "^4.6.8",
+    "@types/lodash.uniq": "^4.5.8",
+    "@types/node": "^18.19.17",
+    "conventional-changelog-atom": "^4.0.0",
+    "typescript": "^5.2.2"
   },
   "dependencies": {
-    "@commitlint/execute-rule": "^13.0.0",
-    "@commitlint/resolve-extends": "^13.0.0",
-    "@commitlint/types": "^13.1.0",
-    "@endemolshinegroup/cosmiconfig-typescript-loader": "^3.0.2",
-    "chalk": "^4.0.0",
-    "cosmiconfig": "^7.0.0",
-    "lodash": "^4.17.19",
-    "resolve-from": "^5.0.0"
+    "@commitlint/config-validator": "^19.0.3",
+    "@commitlint/execute-rule": "^19.0.0",
+    "@commitlint/resolve-extends": "^19.1.0",
+    "@commitlint/types": "^19.0.3",
+    "chalk": "^5.3.0",
+    "cosmiconfig": "^9.0.0",
+    "cosmiconfig-typescript-loader": "^5.0.0",
+    "lodash.isplainobject": "^4.0.6",
+    "lodash.merge": "^4.6.2",
+    "lodash.uniq": "^4.5.0"
   },
   "gitHead": "70f7f4688b51774e7ac5e40e896cdaa3f132b2bc"
 }

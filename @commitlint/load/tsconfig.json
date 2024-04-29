@@ -10,6 +10,7 @@
   "references": [
     {"path": "../execute-rule"},
     {"path": "../resolve-extends"},
+    {"path": "../config-validator"},
     {"path": "../types"}
   ]
 }

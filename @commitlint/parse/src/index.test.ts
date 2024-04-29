@@ -1,11 +1,12 @@
-import parse from '.';
+import {test, expect} from 'vitest';
+import parse from './index.js';
 
 test('throws when called without params', async () => {
-	await expect((parse as any)()).rejects.toThrowError('Expected a raw commit');
+	await expect((parse as any)()).rejects.toThrow('Expected a raw commit');
 });
 
 test('throws when called with empty message', async () => {
-	await expect(parse('')).rejects.toThrowError('Expected a raw commit');
+	await expect(parse('')).rejects.toThrow('Expected a raw commit');
 });
 
 test('returns object with raw message', async () => {
@@ -142,7 +143,8 @@ test('supports scopes with / and empty parserOpts', async () => {
 
 test('ignores comments', async () => {
 	const message = 'type(some/scope): subject\n# some comment';
-	const changelogOpts = await require('conventional-changelog-angular');
+	// @ts-expect-error -- no typings
+	const changelogOpts = await import('conventional-changelog-angular');
 	const opts = {
 		...changelogOpts.parserOpts,
 		commentChar: '#',
@@ -157,7 +159,8 @@ test('ignores comments', async () => {
 test('registers inline #', async () => {
 	const message =
 		'type(some/scope): subject #reference\n# some comment\nthings #reference';
-	const changelogOpts = await require('conventional-changelog-angular');
+	// @ts-expect-error -- no typings
+	const changelogOpts = await import('conventional-changelog-angular');
 	const opts = {
 		...changelogOpts.parserOpts,
 		commentChar: '#',
@@ -168,9 +171,43 @@ test('registers inline #', async () => {
 	expect(actual.body).toBe('things #reference');
 });
 
+test('keep -side notes- in the body section', async () => {
+	const header = 'type(some/scope): subject';
+	const body =
+		'CI on master branch caught this:\n\n' +
+		'```\n' +
+		'Unhandled Exception:\n' +
+		"System.AggregateException: One or more errors occurred. (Some problem when connecting to 'api.mycryptoapi.com/eth')\n\n" +
+		'--- End of stack trace from previous location where exception was thrown ---\n\n' +
+		'at GWallet.Backend.FSharpUtil.ReRaise (System.Exception ex) [0x00000] in /Users/runner/work/geewallet/geewallet/src/GWallet.Backend/FSharpUtil.fs:206\n' +
+		'...\n' +
+		'```';
+
+	const message = header + '\n\n' + body;
+
+	const actual = await parse(message);
+
+	expect(actual.body).toBe(body);
+});
+
+test('allows separating -side nodes- by setting parserOpts.fieldPattern', async () => {
+	const message =
+		'type(scope): subject\n\nbody text\n-authorName-\nrenovate[bot]';
+	const changelogOpts = {
+		parserOpts: {
+			fieldPattern: /^-(.*)-$/,
+		},
+	};
+	const actual = await parse(message, undefined, changelogOpts.parserOpts);
+
+	expect(actual.body).toBe('body text');
+	expect(actual).toHaveProperty('authorName', 'renovate[bot]');
+});
+
 test('parses references leading subject', async () => {
 	const message = '#1 some subject';
-	const opts = await require('conventional-changelog-angular');
+	// @ts-expect-error -- no typings
+	const opts = await import('conventional-changelog-angular');
 	const {
 		references: [actual],
 	} = await parse(message, undefined, opts);

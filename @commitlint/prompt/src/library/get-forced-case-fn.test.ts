@@ -1,6 +1,7 @@
+import {test, expect} from 'vitest';
 import {RuleConfigSeverity} from '@commitlint/types';
 
-import getForcedCaseFn from './get-forced-case-fn';
+import getForcedCaseFn from './get-forced-case-fn.js';
 
 test('should not apply', () => {
 	let rule = getForcedCaseFn(['name', [RuleConfigSeverity.Disabled]]);
@@ -32,13 +33,14 @@ test('should not apply', () => {
 });
 
 test('should throw error on invalid casing', () => {
-	expect(() =>
-		getForcedCaseFn(['name', [RuleConfigSeverity.Warning, 'always']])
-	).toThrow('Unknown target case "undefined"');
+	let rule = getForcedCaseFn(['name', [RuleConfigSeverity.Warning, 'always']]);
+	expect(() => rule('test')).toThrow('Unknown target case "undefined"');
 
-	expect(() =>
-		getForcedCaseFn(['name', [RuleConfigSeverity.Warning, 'always', 'foo']])
-	).toThrow('Unknown target case "foo"');
+	rule = getForcedCaseFn([
+		'name',
+		[RuleConfigSeverity.Warning, 'always', 'foo'],
+	]);
+	expect(() => rule('test')).toThrow('Unknown target case "foo"');
 });
 
 test('should convert text correctly', () => {
@@ -88,13 +90,13 @@ test('should convert text correctly', () => {
 		'name',
 		[RuleConfigSeverity.Warning, 'always', 'sentence-case'],
 	]);
-	expect(rule('TEST_FOOBar-baz baz')).toBe('Test_foobar-baz baz');
+	expect(rule('TEST_FOOBar-baz baz')).toBe('TEST_FOOBar-baz baz');
 
 	rule = getForcedCaseFn([
 		'name',
 		[RuleConfigSeverity.Warning, 'always', 'sentencecase'],
 	]);
-	expect(rule('TEST_FOOBar-baz baz')).toBe('Test_foobar-baz baz');
+	expect(rule('TEST_FOOBar-baz baz')).toBe('TEST_FOOBar-baz baz');
 
 	rule = getForcedCaseFn([
 		'name',

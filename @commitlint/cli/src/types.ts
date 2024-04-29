@@ -8,18 +8,17 @@ export interface CliFlags {
 	help?: boolean;
 	'help-url'?: string;
 	from?: string;
+	'git-log-args'?: string;
+	last?: boolean;
 	format?: string;
 	'parser-preset'?: string;
 	quiet: boolean;
 	to?: string;
 	version?: boolean;
 	verbose?: boolean;
-	'print-config'?: boolean;
+	/** @type {'' | 'text' | 'json'} */
+	'print-config'?: string;
+	strict?: boolean;
 	_: (string | number)[];
 	$0: string;
-}
-
-export interface Seed {
-	extends?: string[];
-	parserPreset?: string;
 }

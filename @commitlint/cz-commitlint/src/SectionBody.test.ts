@@ -1,6 +1,8 @@
+import {describe, test, expect} from 'vitest';
 import {RuleConfigSeverity} from '@commitlint/types';
-import {combineCommitMessage, getQuestions} from './SectionBody';
-import {setRules} from './store/rules';
+
+import {combineCommitMessage, getQuestions} from './SectionBody.js';
+import {setRules} from './store/rules.js';
 
 describe('getQuestions', () => {
 	test('should exclude question when body must be empty', () => {
@@ -73,5 +75,22 @@ describe('combineCommitMessage', () => {
 			issuesBody: 'This is issue body message.',
 		});
 		expect(commitMessage).toBe('This is issue body message.');
+	});
+
+	test('should use issueBody when body message is empty string but commit has issue note', () => {
+		setRules({});
+		const commitMessage = combineCommitMessage({
+			body: '',
+			issuesBody: 'This is issue body message.',
+		});
+		expect(commitMessage).toBe('This is issue body message.');
+	});
+
+	test('should return empty message when body is empty', () => {
+		setRules({});
+		const commitMessage = combineCommitMessage({
+			body: '',
+		});
+		expect(commitMessage).toBe('');
 	});
 });

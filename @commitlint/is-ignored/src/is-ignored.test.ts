@@ -1,4 +1,6 @@
-import isIgnored from './is-ignored';
+import {test, expect} from 'vitest';
+
+import isIgnored from './is-ignored.js';
 
 const VERSION_MESSAGES = [
 	'0.0.1',
@@ -70,6 +72,26 @@ test('should return true for branch merges with newline characters and more char
 	);
 });
 
+test('should return true for tag merges', () => {
+	expect(isIgnored("Merge tag '1.1.1'")).toBe(true);
+	expect(isIgnored("Merge tag 'a tag'")).toBe(true);
+});
+
+test('should return true for tag merges with newline characters', () => {
+	expect(isIgnored("Merge tag '1.1.1'\n")).toBe(true);
+	expect(isIgnored("Merge tag '1.1.1'\r\n")).toBe(true);
+});
+
+test('should return true for tag merges with multiple newline characters', () => {
+	expect(isIgnored("Merge tag '1.1.1'\n\n\n")).toBe(true);
+	expect(isIgnored("Merge tag '1.1.1'\r\n\r\n\r\n")).toBe(true);
+});
+
+test('should return true for tag merges with newline characters and more characters after it', () => {
+	expect(isIgnored("Merge tag '1.1.1'\n ")).toBe(true);
+	expect(isIgnored("Merge tag '1.1.1'\r\n # some comment")).toBe(true);
+});
+
 test('should return true for revert commits', () => {
 	expect(
 		isIgnored(
@@ -102,6 +124,10 @@ test('should ignore npm semver commits with footers', () => {
 	);
 });
 
+test('should return true amend commits', () => {
+	expect(isIgnored('amend! initial commit')).toBe(true);
+});
+
 test('should return true fixup commits', () => {
 	expect(isIgnored('fixup! initial commit')).toBe(true);
 });
@@ -131,6 +157,10 @@ test('should return true for azure devops merge commits', () => {
 
 test('should return false for commits containing, but not starting, with merge branch', () => {
 	expect(isIgnored('foo bar Merge branch xxx')).toBe(false);
+});
+
+test('should return false for commits containing, but not starting, with merge tag', () => {
+	expect(isIgnored("foo bar Merge tag '1.1.1'")).toBe(false);
 });
 
 test('should return false for ignored message if defaults is false', () => {

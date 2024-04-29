@@ -1,11 +1,11 @@
-import {UserPromptConfig} from './prompt';
+import {UserPromptConfig} from './prompt.js';
 import {
 	AsyncRule,
 	Rule,
 	RuleConfigQuality,
 	RulesConfig,
 	SyncRule,
-} from './rules';
+} from './rules.js';
 
 export type PluginRecords = Record<string, Plugin>;
 
@@ -21,26 +21,16 @@ export interface LoadOptions {
 }
 
 export interface UserConfig {
-	extends?: string[];
+	extends?: string | string[];
 	formatter?: string;
 	rules?: Partial<RulesConfig>;
-	parserPreset?: string | ParserPreset;
+	parserPreset?: string | ParserPreset | Promise<ParserPreset>;
 	ignores?: ((commit: string) => boolean)[];
 	defaultIgnores?: boolean;
 	plugins?: (string | Plugin)[];
 	helpUrl?: string;
 	prompt?: UserPromptConfig;
-}
-
-export interface UserPreset {
-	extends?: string[];
-	formatter?: string;
-	rules?: Partial<RulesConfig>;
-	parserPreset?: string | ParserPreset;
-	ignores?: ((commit: string) => boolean)[];
-	defaultIgnores?: boolean;
-	plugins: PluginRecords;
-	prompt?: UserPromptConfig;
+	[key: string]: unknown;
 }
 
 export type QualifiedRules = Partial<RulesConfig<RuleConfigQuality.Qualified>>;
@@ -49,16 +39,16 @@ export interface QualifiedConfig {
 	extends: string[];
 	formatter: string;
 	rules: QualifiedRules;
-	parserPreset: ParserPreset;
-	ignores: ((commit: string) => boolean)[];
-	defaultIgnores: boolean;
+	parserPreset?: ParserPreset;
+	ignores?: ((commit: string) => boolean)[];
+	defaultIgnores?: boolean;
 	plugins: PluginRecords;
 	helpUrl: string;
 	prompt: UserPromptConfig;
 }
 
 export interface ParserPreset {
-	name: string;
-	path: string;
+	name?: string;
+	path?: string;
 	parserOpts?: unknown;
 }

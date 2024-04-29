@@ -1,7 +1,9 @@
 {
   "name": "@commitlint/config-angular",
-  "version": "13.1.0",
+  "type": "module",
+  "version": "19.3.0",
   "description": "Shareable commitlint config enforcing the angular commit convention",
+  "main": "index.js",
   "files": [
     "index.js"
   ],
@@ -11,7 +13,8 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/conventional-changelog/commitlint.git"
+    "url": "https://github.com/conventional-changelog/commitlint.git",
+    "directory": "@commitlint/config-angular"
   },
   "keywords": [
     "conventional-changelog",
@@ -24,16 +27,16 @@
   "bugs": {
     "url": "https://github.com/conventional-changelog/commitlint/issues"
   },
-  "homepage": "https://github.com/conventional-changelog/commitlint#readme",
+  "homepage": "https://commitlint.js.org/",
   "engines": {
-    "node": ">=v12"
+    "node": ">=v18"
   },
   "devDependencies": {
-    "@commitlint/lint": "^13.1.0",
-    "@commitlint/utils": "^13.0.0"
+    "@commitlint/lint": "^19.2.2",
+    "@commitlint/utils": "^19.0.0"
   },
   "dependencies": {
-    "@commitlint/config-angular-type-enum": "^13.0.0"
+    "@commitlint/config-angular-type-enum": "^19.1.0"
   },
   "gitHead": "d829bf6260304ca8d6811f329fcdd1b6c50e9749"
 }

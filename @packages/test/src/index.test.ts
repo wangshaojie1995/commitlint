@@ -1,7 +1,9 @@
-import * as u from '.';
+import {test, expect} from 'vitest';
 import os from 'os';
 import path from 'path';
 import fs from 'fs-extra';
+
+import * as u from './index.js';
 
 test('exports a git namespace', () => {
 	expect(typeof u.git).toBe('object');
@@ -27,6 +29,6 @@ test('expect to create tmp from directory from src', async () => {
 	expect(directory).toContain(os.tmpdir());
 	expect(fs.existsSync(directory)).toBeTruthy();
 
-	const indexFile = path.join(directory, 'ISSUE_TEMPLATE.md');
+	const indexFile = path.join(directory, 'PULL_REQUEST_TEMPLATE.md');
 	expect(fs.existsSync(indexFile)).toBeTruthy();
 });

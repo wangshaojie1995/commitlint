@@ -1,15 +1,17 @@
-import * as prompts from './prompts';
+import {describe, test, expect, vi, beforeEach} from 'vitest';
+import * as prompts from './prompts.js';
 
 let getPromptQuestions: typeof prompts.getPromptQuestions;
 let getPromptMessages: typeof prompts.getPromptMessages;
+let getPromptSettings: typeof prompts.getPromptSettings;
 let setPromptConfig: typeof prompts.setPromptConfig;
 
-beforeEach(() => {
-	jest.resetModules();
-	getPromptMessages = require('./prompts').getPromptMessages;
-	getPromptQuestions = require('./prompts').getPromptQuestions;
-	setPromptConfig = require('./prompts').setPromptConfig;
+beforeEach(async () => {
+	vi.resetModules();
+	({getPromptQuestions, getPromptMessages, getPromptSettings, setPromptConfig} =
+		await import('./prompts.js'));
 });
+
 describe('setPromptConfig', () => {
 	test('should cover questions when prompt config questions is plain object', () => {
 		const promptConfig = {
@@ -105,5 +107,34 @@ describe('setPromptConfig', () => {
 			},
 		});
 		expect(getPromptMessages()).toEqual(initialMessages);
+	});
+
+	test('should settings scopeEnumSeparator be set when value is ",\\/"', () => {
+		setPromptConfig({
+			settings: {
+				scopeEnumSeparator: '/',
+			},
+		});
+		expect(getPromptSettings()['scopeEnumSeparator']).toEqual('/');
+
+		const processExit = vi
+			.spyOn(process, 'exit')
+			.mockImplementation(() => undefined as never);
+		setPromptConfig({
+			settings: {
+				scopeEnumSeparator: '-',
+			},
+		});
+		expect(processExit).toHaveBeenCalledWith(1);
+		processExit.mockClear();
+	});
+
+	test('should pass on settings', () => {
+		setPromptConfig({
+			settings: {
+				enableMultipleScopes: true,
+			},
+		});
+		expect(getPromptSettings()['enableMultipleScopes']).toEqual(true);
 	});
 });

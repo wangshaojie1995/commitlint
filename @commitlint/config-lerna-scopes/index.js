@@ -1,10 +1,13 @@
-const Path = require('path');
-const importFrom = require('import-from');
-const resolvePkg = require('resolve-pkg');
-const Globby = require('globby');
-const semver = require('semver');
+import {createRequire} from 'module';
+import Path from 'path';
 
-module.exports = {
+import {globSync} from 'glob';
+import importFrom from 'import-from';
+import semver from 'semver';
+
+const require = createRequire(import.meta.url);
+
+export default {
 	utils: {getPackages},
 	rules: {
 		'scope-enum': (ctx) =>
@@ -21,14 +24,13 @@ function getPackages(context) {
 			const {workspaces} = require(Path.join(cwd, 'package.json'));
 			if (Array.isArray(workspaces) && workspaces.length) {
 				// use yarn workspaces
-				return Globby(
-					workspaces.map((ws) => {
-						return Path.posix.join(ws, 'package.json');
-					}),
-					{cwd}
-				).then((pJsons = []) => {
-					return pJsons.map((pJson) => require(Path.join(cwd, pJson)));
+
+				const wsGlobs = workspaces.flatMap((ws) => {
+					const path = Path.posix.join(ws, 'package.json');
+					return globSync(path, {cwd, ignore: ['**/node_modules/**']});
 				});
+
+				return wsGlobs.map((pJson) => require(Path.join(cwd, pJson)));
 			}
 
 			const lernaVersion = getLernaVersion(cwd);
@@ -55,5 +57,14 @@ function getPackages(context) {
 }
 
 function getLernaVersion(cwd) {
-	return require(Path.join(resolvePkg('lerna', {cwd}), 'package.json')).version;
+	const moduleEntrypoint = require.resolve('lerna', {
+		paths: [cwd],
+	});
+	const moduleDir = Path.join(
+		moduleEntrypoint.slice(0, moduleEntrypoint.lastIndexOf('node_modules')),
+		'node_modules',
+		'lerna'
+	);
+	const modulePackageJson = Path.join(moduleDir, 'package.json');
+	return require(modulePackageJson).version;
 }

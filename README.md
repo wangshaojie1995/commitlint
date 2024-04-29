@@ -1,16 +1,16 @@
-# [Get Started](https://conventional-changelog.github.io/commitlint/#/?id=getting-started) | [Let's chat][12] ![slack][11] | [Website](https://conventional-changelog.github.io/commitlint)
+# [Get Started](https://commitlint.js.org/guides/getting-started) | [Website](https://commitlint.js.org)
 
 > Lint commit messages
 
 <p align="center">
-  <img width="600" src="docs/assets/commitlint.svg">
+  <img width="600" src="docs/public/assets/commitlint.svg">
 </p>
 
 > Demo generated with [svg-term-cli](https://github.com/marionebl/svg-term-cli)
 >
-> `cat docs/assets/commitlint.json | svg-term --out docs/assets/commitlint.svg --frame --profile=Seti --height=20 --width=80`
+> `cat docs/assets/commitlint.json | svg-term --out docs/public/assets/commitlint.svg --frame --profile=Seti --height=20 --width=80`
 
-[![npm latest][2]][3] [![CircleCI][4]][5] <!-- [![TravisCI][6]][7] -->
+[![npm latest][2]][3] [![node compatibility][13]][14] [![Github Actions][4]][5]
 
 - 🚓 Be a good `commitizen`
 - 📦 Share configuration via `npm`
@@ -18,20 +18,24 @@
 
 ## Contents
 
-- [What is commitlint](#what-is-commitlint)
-  - [Benefits using commitlint](#benefits-using-commitlint)
-- [Getting started](#getting-started)
-- [CLI](#cli)
-- [Config](#config)
-- [Shared configuration](#shared-configuration)
-- [API](#api)
-- [Tools](#tools)
-- [Version Support and Releaes](#version-support-and-releaes)
-- [Related projects](#related-projects)
-- [License](#license)
-- [Development](#development)
-  - [Install and run](#install-and-run)
-  - [Publishing a release](#publishing-a-release)
+- [Get Started | Website](#get-started--website)
+  - [Contents](#contents)
+  - [What is commitlint](#what-is-commitlint)
+    - [Benefits of using commitlint](#benefits-of-using-commitlint)
+  - [Getting started](#getting-started)
+  - [CLI](#cli)
+  - [Config](#config)
+  - [Shared configuration](#shared-configuration)
+  - [Documentation](#documentation)
+  - [API](#api)
+  - [Tools](#tools)
+  - [Roadmap](#roadmap)
+  - [Version Support and Releases](#version-support-and-releases)
+    - [Releases](#releases)
+  - [Related projects](#related-projects)
+  - [License](#license)
+  - [Development](#development)
+    - [Install and run](#install-and-run)
 
 ---
 
@@ -47,23 +51,23 @@ type(scope?): subject  #scope is optional; multiple scopes are supported (curren
 
 Real world examples can look like this:
 
-```
+```text
 chore: run tests on travis ci
 ```
 
-```
+```text
 fix(server): send cors headers
 ```
 
-```
+```text
 feat(blog): add comment section
 ```
 
 Common types according to [commitlint-config-conventional (based on the Angular convention)](https://github.com/conventional-changelog/commitlint/tree/master/@commitlint/config-conventional#type-enum) can be:
 
 - build
-- ci
 - chore
+- ci
 - docs
 - feat
 - fix
@@ -75,46 +79,15 @@ Common types according to [commitlint-config-conventional (based on the Angular 
 
 These can be modified by [your own configuration](#config).
 
-### Benefits using commitlint
+### Benefits of using commitlint
 
 - [Why Use Conventional Commits?](https://www.conventionalcommits.org/en/v1.0.0-beta.2/#why-use-conventional-commits)
 - ["The perks of committing with conventions" (Talk slides)](https://slides.com/marionebl/the-perks-of-committing-with-conventions#/)
 
 ## Getting started
 
-```sh
-# Install commitlint cli and conventional config
-npm install --save-dev @commitlint/{config-conventional,cli}
-# For Windows:
-npm install --save-dev @commitlint/config-conventional @commitlint/cli
-
-# Configure commitlint to use conventional config
-echo "module.exports = {extends: ['@commitlint/config-conventional']}" > commitlint.config.js
-```
-
-To lint commits before they are created you can use Husky's `commit-msg` hook:
-
-```sh
-# Install Husky v6
-npm install husky --save-dev
-# or
-yarn add husky --dev
-
-# Activate hooks
-npx husky install
-# or
-yarn husky install
-
-# Add hook
-npx husky add .husky/commit-msg 'npx --no-install commitlint --edit "$1"'
-```
-
-Check the [husky documentation](https://typicode.github.io/husky/#/?id=manual) on how you can automatically have Git hooks enabled after install for different `yarn` versions.
-
-**Detailed Setup instructions**
-
-- [Local setup](https://conventional-changelog.github.io/commitlint/#/guides-local-setup) - Lint messages on commit with husky
-- [CI setup](https://conventional-changelog.github.io/commitlint/#/guides-ci-setup) - Lint messages during CI builds
+- [Local setup](https://commitlint.js.org/guides/local-setup) - Lint messages on commit with husky
+- [CI setup](https://commitlint.js.org/guides/ci-setup) - Lint messages during CI builds
 
 ## CLI
 
@@ -124,10 +97,26 @@ Check the [husky documentation](https://typicode.github.io/husky/#/?id=manual) o
 
 ## Config
 
-- Configuration is picked up from `commitlint.config.js`, `.commitlintrc.js`, `.commitlintrc`, `.commitlintrc.json`, `.commitlintrc.yml` file or a `commitlint` field in `package.json`
+- Configuration is picked up from:
+  - `.commitlintrc`
+  - `.commitlintrc.json`
+  - `.commitlintrc.yaml`
+  - `.commitlintrc.yml`
+  - `.commitlintrc.js`
+  - `.commitlintrc.cjs`
+  - `.commitlintrc.mjs`
+  - `.commitlintrc.ts`
+  - `.commitlintrc.cts`
+  - `commitlint.config.js`
+  - `commitlint.config.cjs`
+  - `commitlint.config.mjs`
+  - `commitlint.config.ts`
+  - `commitlint.config.cts`
+  - `commitlint` field in `package.json`
+  - `commitlint` field in [`package.yaml`](https://github.com/pnpm/pnpm/pull/1799)
 - Packages: [cli](./@commitlint/cli), [core](./@commitlint/core)
-- See [Rules](./docs/reference-rules.md) for a complete list of possible rules
-- An example configuration can be found at [@commitlint/config-conventional](./@commitlint/config-conventional/index.js)
+- See [Rules](./docs/reference/rules.md) for a complete list of possible rules
+- An example configuration can be found at [@commitlint/config-conventional](./@commitlint/config-conventional/src/index.ts)
 
 ## Shared configuration
 
@@ -136,12 +125,17 @@ A number of shared configurations are available to install and use with `commitl
 - [@commitlint/config-angular](./@commitlint/config-angular)
 - [@commitlint/config-conventional](./@commitlint/config-conventional)
 - [@commitlint/config-lerna-scopes](./@commitlint/config-lerna-scopes)
+- [@commitlint/config-nx-scopes](./@commitlint/config-nx-scopes)
 - [@commitlint/config-patternplate](./@commitlint/config-patternplate)
 - [conventional-changelog-lint-config-atom](https://github.com/erikmueller/conventional-changelog-lint-config-atom)
 - [conventional-changelog-lint-config-canonical](https://github.com/gajus/conventional-changelog-lint-config-canonical)
 - [commitlint-config-jira](https://github.com/Gherciu/commitlint-jira)
 
 > ⚠️ If you want to publish your own shareable config then make sure it has a name aligning with the pattern `commitlint-config-emoji-log` or `commitlint-config-your-config-name` — then in extend all you have to write is `emoji-log` or `your-config-name`.
+
+## Documentation
+
+Check the [main website](https://commitlint.js.org/).
 
 ## API
 
@@ -151,7 +145,7 @@ A number of shared configurations are available to install and use with `commitl
   - [lint](./@commitlint/lint) - Lint a string against commitlint rules
   - [load](./@commitlint/load) - Load shared commitlint configuration
   - [read](./@commitlint/read) - Read commit messages from a specified range or last edit
-- See [API](./docs/reference-api.md) for a complete list of methods and examples
+- See [API](./docs/api) for a complete list of methods and examples
 
 ## Tools
 
@@ -160,47 +154,44 @@ A number of shared configurations are available to install and use with `commitl
 
 ## Roadmap
 
+`commitlint` is considered stable and is used in various projects as a development tool.
+
 > **Ideas**: [conventional-changelog/commitlint#94](https://github.com/conventional-changelog/commitlint/issues/94)
 
-`commitlint` is considered stable and is used in various projects as development tool.
+## Version Support and Releases
 
-We identify **ease of adoption** and **developer experience** as fields where there
-is room and need for improvement. The items on the roadmap should enhance `commitlint` regarding those aspects.
-
-- [x] **Adoption**: Provide reusable Travis CI integration: `@commitlint/travis-cli` (https://github.com/conventional-changelog/commitlint/releases/tag/v5.1.0)
-- [ ] **DX**: Support PR squash scenario via [ahmed-taj/commitlint-bot](https://github.com/ahmed-taj/commitlint-bot/) and `@commitlint/travis-cli`
-- [ ] **Adoption**: Make [ahmed-taj/commitlint-bot](https://github.com/ahmed-taj/commitlint-bot/) configurable via `commitlint` configuration
-- [ ] **Adoption**: Create `commitlint init`
-- [ ] **DX**: Extend the configuration schema to allow for additional fields (descriptions, examples, fixes) on both the rule and value level
-- [ ] **DX**: Incorporate an extended version of [lennym/commit-template](https://github.com/lennym/commit-template) deducing a template from commitlint configuration
-- [ ] **DX**: Rewrite `@commitlint/prompt` for better usability (might involve a lot of yak-shaving)
-
-## Version Support and Releaes
-
-- Node.js [LTS](https://github.com/nodejs/LTS#lts-schedule) `>= 12`
+- Node.js [LTS](https://github.com/nodejs/LTS#lts-schedule) `>= 18`
 - git `>= 2.13.2`
 
 ### Releases
 
-Security patches will be applied to versions which are not yet EOL.  
+Security patches will be applied to versions which are not yet EOL.\
 Features will only be applied to the current main version.
 
-| Release                                                                          | Inital release | End-of-life |
-| -------------------------------------------------------------------------------- | -------------- | ----------- |
-| [v13](https://github.com/conventional-changelog/commitlint/releases/tag/v13.0.0) | 24.05.2021     | 24.05.2022  |
-| [v12](https://github.com/conventional-changelog/commitlint/releases/tag/v12.0.0) | 23.02.2021     | 23.02.2022  |
-| [v11](https://github.com/conventional-changelog/commitlint/releases/tag/v11.0.0) | 13.09.2020     | 13.09.2020  |
+| Release                                                                          | Initial release |
+| -------------------------------------------------------------------------------- | --------------- |
+| [v18](https://github.com/conventional-changelog/commitlint/releases/tag/v18.0.0) | 10/2023         |
+| [v17](https://github.com/conventional-changelog/commitlint/releases/tag/v17.0.0) | 05/2022         |
+| [v16](https://github.com/conventional-changelog/commitlint/releases/tag/v16.0.0) | 12/2021         |
+| [v15](https://github.com/conventional-changelog/commitlint/releases/tag/v15.0.0) | 11/2021         |
+| [v14](https://github.com/conventional-changelog/commitlint/releases/tag/v14.0.0) | 10/2021         |
+| [v13](https://github.com/conventional-changelog/commitlint/releases/tag/v13.0.0) | 05/2021         |
+| [v12](https://github.com/conventional-changelog/commitlint/releases/tag/v12.0.0) | 02/2021         |
+| [v11](https://github.com/conventional-changelog/commitlint/releases/tag/v11.0.0) | 09/2020         |
 
-_Dates are subject to change._
+EOL is usually after around a year.
 
-We're not a sponsored OSS project. Therefor we can't promise that we will release patch versions for older releases in a timley manner.  
+We're not a sponsored OSS project. Therefore we can't promise that we will release patch versions for older releases in a timely manner.\
 If you are stuck on an older version and need a security patch we're happy if you can provide a PR.
 
 ## Related projects
 
-- [conventional-changelog](https://git.io/v18sw) – Generate a changelog from conventional commit history
-- [commitizen](https://git.io/vwTym) – Simple commit conventions for internet citizens
-- [create-semantic-module](https://git.io/vFjFg) – CLI for quickly integrating commitizen and commitlint in new or existing projects
+- [conventional-changelog](https://github.com/conventional-changelog/conventional-changelog)
+  Generate a changelog from conventional commit history
+- [commitizen](https://github.com/commitizen/cz-cli)
+  Simple commit conventions for internet citizens
+- [create-semantic-module](https://github.com/jlegrone/create-semantic-module)
+  CLI for quickly integrating commitizen and commitlint in new or existing projects
 
 ## License
 
@@ -218,80 +209,19 @@ cd commitlint
 yarn
 yarn run build # run build tasks
 yarn start # run tests, again on change
+yarn run commitlint # run CLI
 ```
 
 For more information on how to contribute please take a look at our [contribution guide](./.github/CONTRIBUTING.md).
-
-### Package dependency overview
-
-![commitlint-dependencies](https://user-images.githubusercontent.com/4248851/58385093-34b79780-7feb-11e9-8f27-bffc4aca3eba.png)
-
-### Publishing a release
-
-Before publishing a release do a `yarn run publish --dry-run` to get the upcoming version and update the version
-in the [`should print help` test](https://github.com/conventional-changelog/commitlint/blob/master/@commitlint/cli/src/cli.test.ts#L431).  
-Commit that change before creating the new version without `--dry-run`.
-
-```sh
-npm login
-```
-
-```sh
-yarn clean
-yarn install
-yarn run build
-yarn test
-yarn run publish --otp <one-time password>
-```
-
-#### Publish a `next` release
-
-```sh
-npm login
-```
-
-```sh
-yarn clean
-yarn install
-yarn run build
-yarn test
-npx lerna publish --conventional-commits --dist-tag next --otp <one-time password>
-```
-
-If for some reason this stops in between, you can manually publish missing packages like this:
-
-```
-npm publish <package-name> --tag next --otp <one-time password>
-```
-
-##### Move `next` to `latest`
-
-```sh
-npm login
-```
-
-```sh
-npx lerna exec --no-bail --no-private --no-sort --stream -- '[ -n "$(npm v . dist-tags.next)" ] && npm dist-tag add ${LERNA_PACKAGE_NAME}@$(npm v . dist-tags.next) latest --otp <one-time password>'
-```
-
-Remove next:
-
-```sh
-npx lerna exec --no-bail --no-private --no-sort --stream -- '[ -n "$(npm v . dist-tags.next)" ] && npm dist-tag rm ${LERNA_PACKAGE_NAME} next --otp <one-time password>'
-```
 
 [0]: https://img.shields.io/badge/stability-stable-green.svg?style=flat-square
 [1]: https://nodejs.org/api/documentation.html#documentation_stability_index
 [2]: https://img.shields.io/npm/v/@commitlint/cli.svg?style=flat-square
 [3]: https://npmjs.org/package/@commitlint/cli
-[4]: https://img.shields.io/circleci/project/github/conventional-changelog/commitlint/master.svg?style=flat-square
-[5]: https://circleci.com/gh/conventional-changelog/commitlint
-
-<!-- [6]: https://img.shields.io/appveyor/ci/conventional-changelog/commitlint/master.svg?style=flat-square
-[7]: https://ci.appveyor.com/project/conventional-changelog/commitlint -->
-
+[4]: https://github.com/conventional-changelog/commitlint/actions/workflows/CI.yml/badge.svg
+[5]: https://github.com/conventional-changelog/commitlint/actions/workflows/CI.yml
 [8]: https://img.shields.io/badge/stability-experimental-orange.svg?style=flat-square
 [9]: https://nodejs.org/api/documentation.html#documentation_stability_index
 [10]: https://img.shields.io/npm/v/@commitlint/cli/next.svg?style=flat-square
-[11]: https://devtoolscommunity.herokuapp.com/badge.svg?style=flat-square
-[12]: https://devtoolscommunity.herokuapp.com
+[13]: https://img.shields.io/node/v/@commitlint/cli.svg
+[14]: https://nodejs.org/en/about/previous-releases

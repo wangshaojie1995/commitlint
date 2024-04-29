@@ -1,6 +1,12 @@
-import Path from 'path';
-import {lerna} from '@commitlint/test';
-import config from '.';
+import {test, expect} from 'vitest';
+import path from 'path';
+import {fileURLToPath} from 'url';
+
+import {npm} from '@commitlint/test';
+
+import config from './index.js';
+
+const __dirname = path.resolve(fileURLToPath(import.meta.url), '..');
 
 test('exports rules key', () => {
 	expect(config).toHaveProperty('rules');
@@ -47,14 +53,14 @@ test('scope-enum has expected modifier', async () => {
 
 test('returns empty value for empty lerna repository', async () => {
 	const {'scope-enum': fn} = config.rules;
-	const cwd = await lerna.bootstrap('empty', __dirname);
+	const cwd = await npm.bootstrap('fixtures/empty', __dirname);
 	const [, , value] = await fn({cwd});
 	expect(value).toEqual([]);
 });
 
 test('returns expected value for basic lerna repository', async () => {
 	const {'scope-enum': fn} = config.rules;
-	const cwd = await lerna.bootstrap('basic', __dirname);
+	const cwd = await npm.bootstrap('fixtures/basic', __dirname);
 
 	const [, , value] = await fn({cwd});
 	expect(value).toEqual(['a', 'b']);
@@ -62,7 +68,7 @@ test('returns expected value for basic lerna repository', async () => {
 
 test('returns expected value for lerna repository containing modules', async () => {
 	const {'scope-enum': fn} = config.rules;
-	const cwd = await lerna.bootstrap('modules', __dirname);
+	const cwd = await npm.bootstrap('fixtures/modules', __dirname);
 
 	const [, , value] = await fn({cwd});
 	expect(value).toEqual(['a']);
@@ -70,7 +76,7 @@ test('returns expected value for lerna repository containing modules', async () 
 
 test('returns expected value for scoped lerna repository', async () => {
 	const {'scope-enum': fn} = config.rules;
-	const cwd = await lerna.bootstrap('scoped', __dirname);
+	const cwd = await npm.bootstrap('fixtures/scoped', __dirname);
 
 	const [, , value] = await fn({cwd});
 	expect(value).toEqual(['a', 'b']);
@@ -78,7 +84,18 @@ test('returns expected value for scoped lerna repository', async () => {
 
 test('returns expected value for yarn workspaces', async () => {
 	const {'scope-enum': fn} = config.rules;
-	const cwd = Path.join(__dirname, 'fixtures', 'yarn');
+	const cwd = path.join(__dirname, 'fixtures', 'yarn');
 	const [, , value] = await fn({cwd});
 	expect(value.sort()).toEqual(['a', 'b']);
+});
+
+test('returns expected value for yarn workspaces has nested packages', async () => {
+	const {'scope-enum': fn} = config.rules;
+	const cwd = await npm.bootstrap('fixtures/nested-workspaces', __dirname);
+
+	const [, , value] = await fn({cwd});
+	expect(value).toEqual(expect.arrayContaining(['nested-a', 'nested-b']));
+	expect(value).toEqual(
+		expect.not.arrayContaining(['dependency-a', 'dependency-b'])
+	);
 });

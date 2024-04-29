@@ -1,16 +1,25 @@
-const plugin = jest.fn();
-const scopedPlugin = jest.fn();
-
-jest.mock('commitlint-plugin-example', () => plugin, {virtual: true});
-jest.mock('@scope/commitlint-plugin-example', () => scopedPlugin, {
-	virtual: true,
-});
-
+import {describe, test, expect, vi} from 'vitest';
+import {readFileSync, writeFileSync} from 'fs';
 import path from 'path';
-import resolveFrom from 'resolve-from';
+import {fileURLToPath} from 'url';
+
+import {RuleConfigSeverity} from '@commitlint/types';
 import {fix, git, npm} from '@commitlint/test';
 
-import load from './load';
+import load, {resolveFrom} from './load.js';
+import {isDynamicAwaitSupported} from './utils/load-config.js';
+
+const __dirname = path.resolve(fileURLToPath(import.meta.url), '..');
+
+const plugin = vi.fn();
+const scopedPlugin = vi.fn();
+
+vi.mock('commitlint-plugin-example', () => ({
+	default: plugin,
+}));
+vi.mock('@scope/commitlint-plugin-example', () => ({
+	default: scopedPlugin,
+}));
 
 const fixBootstrap = (name: string) => fix.bootstrap(name, __dirname);
 const gitBootstrap = (name: string) => git.bootstrap(name, __dirname);
@@ -21,35 +30,87 @@ test('extends-empty should have no rules', async () => {
 	const actual = await load({}, {cwd});
 
 	expect(actual.rules).toMatchObject({});
+	expect(actual.parserPreset).not.toBeDefined();
 });
 
 test('uses seed as configured', async () => {
 	const cwd = await gitBootstrap('fixtures/extends-empty');
-	const rules = {'body-case': [1, 'never', 'camel-case'] as any};
+	const rules = {
+		'body-case': [RuleConfigSeverity.Warning, 'never', 'camel-case'] as any,
+	};
 
 	const actual = await load({rules}, {cwd});
 
-	expect(actual.rules['body-case']).toStrictEqual([1, 'never', 'camel-case']);
+	expect(actual.rules['body-case']).toStrictEqual([
+		RuleConfigSeverity.Warning,
+		'never',
+		'camel-case',
+	]);
+});
+
+test('rules should be loaded from local', async () => {
+	const actual = await load({
+		rules: {
+			direct: [RuleConfigSeverity.Warning, 'never', 'foo'],
+			func: () => [RuleConfigSeverity.Warning, 'never', 'foo'],
+			async: async () => [RuleConfigSeverity.Warning, 'never', 'foo'],
+			promise: () =>
+				Promise.resolve([RuleConfigSeverity.Warning, 'never', 'foo']),
+		},
+	});
+
+	expect(actual.rules['direct']).toStrictEqual([
+		RuleConfigSeverity.Warning,
+		'never',
+		'foo',
+	]);
+	expect(actual.rules['func']).toStrictEqual([
+		RuleConfigSeverity.Warning,
+		'never',
+		'foo',
+	]);
+	expect(actual.rules['async']).toStrictEqual([
+		RuleConfigSeverity.Warning,
+		'never',
+		'foo',
+	]);
+	expect(actual.rules['promise']).toStrictEqual([
+		RuleConfigSeverity.Warning,
+		'never',
+		'foo',
+	]);
 });
 
 test('rules should be loaded from relative config file', async () => {
 	const file = 'config/commitlint.config.js';
 	const cwd = await gitBootstrap('fixtures/specify-config-file');
-	const rules = {'body-case': [1, 'never', 'camel-case'] as any};
+	const rules = {
+		'body-case': [RuleConfigSeverity.Warning, 'never', 'camel-case'] as any,
+	};
 
 	const actual = await load({rules}, {cwd, file});
 
-	expect(actual.rules['body-case']).toStrictEqual([1, 'never', 'camel-case']);
+	expect(actual.rules['body-case']).toStrictEqual([
+		RuleConfigSeverity.Warning,
+		'never',
+		'camel-case',
+	]);
 });
 
 test('rules should be loaded from absolute config file', async () => {
 	const cwd = await gitBootstrap('fixtures/specify-config-file');
 	const file = path.resolve(cwd, 'config/commitlint.config.js');
-	const rules = {'body-case': [1, 'never', 'camel-case'] as any};
+	const rules = {
+		'body-case': [RuleConfigSeverity.Warning, 'never', 'camel-case'] as any,
+	};
 
 	const actual = await load({rules}, {cwd: process.cwd(), file});
 
-	expect(actual.rules['body-case']).toStrictEqual([1, 'never', 'camel-case']);
+	expect(actual.rules['body-case']).toStrictEqual([
+		RuleConfigSeverity.Warning,
+		'never',
+		'camel-case',
+	]);
 });
 
 test('plugins should be loaded from seed', async () => {
@@ -127,8 +188,9 @@ test('uses seed with parserPreset', async () => {
 		{cwd}
 	);
 
-	expect(actual.name).toBe('./conventional-changelog-custom');
-	expect(actual.parserOpts).toMatchObject({
+	expect(actual).toBeDefined();
+	expect(actual!.name).toBe('./conventional-changelog-custom');
+	expect(actual!.parserOpts).toMatchObject({
 		headerPattern: /^(\w*)(?:\((.*)\))?-(.*)$/,
 	});
 });
@@ -162,89 +224,125 @@ test('respects cwd option', async () => {
 		extends: ['./second-extended'],
 		plugins: {},
 		rules: {
-			one: 1,
-			two: 2,
+			one: [RuleConfigSeverity.Warning, 'always'],
+			two: [RuleConfigSeverity.Error, 'never'],
 		},
 	});
 });
 
-test('recursive extends', async () => {
-	const cwd = await gitBootstrap('fixtures/recursive-extends');
-	const actual = await load({}, {cwd});
+describe.each([['basic'], ['extends']])('%s config', (template) => {
+	const isExtendsTemplate = template === 'extends';
 
-	expect(actual).toMatchObject({
-		formatter: '@commitlint/format',
-		extends: ['./first-extended'],
-		plugins: {},
-		rules: {
-			zero: 0,
-			one: 1,
-			two: 2,
-		},
-	});
-});
+	const configFiles = [
+		'commitlint.config.cjs',
+		'commitlint.config.js',
+		'commitlint.config.mjs',
+		'package.json',
+		'package.yaml',
+		'.commitlintrc',
+		'.commitlintrc.cjs',
+		'.commitlintrc.js',
+		'.commitlintrc.json',
+		'.commitlintrc.mjs',
+		'.commitlintrc.yml',
+		'.commitlintrc.yaml',
+	];
 
-test('recursive extends with json file', async () => {
-	const cwd = await gitBootstrap('fixtures/recursive-extends-json');
-	const actual = await load({}, {cwd});
+	const configTestCases = [
+		...configFiles
+			.filter((filename) => !filename.endsWith('.mjs'))
+			.map((filename) => ({filename, isEsm: false})),
+		...configFiles
+			.filter((filename) =>
+				['.mjs', '.js'].some((ext) => filename.endsWith(ext))
+			)
+			.map((filename) => ({filename, isEsm: true})),
+	];
 
-	expect(actual).toMatchObject({
-		formatter: '@commitlint/format',
-		extends: ['./first-extended'],
-		plugins: {},
-		rules: {
-			zero: 0,
-			one: 1,
-			two: 2,
-		},
-	});
-});
+	const getConfigContents = ({
+		filename,
+		isEsm,
+	}: {
+		filename: string;
+		isEsm: boolean;
+	}): string | NodeJS.ArrayBufferView => {
+		if (filename === 'package.json') {
+			const configPath = path.join(
+				__dirname,
+				`../fixtures/${template}-config/.commitlintrc.json`
+			);
+			const commitlint = JSON.parse(
+				readFileSync(configPath, {encoding: 'utf-8'})
+			);
+			return JSON.stringify({commitlint});
+		} else if (filename === 'package.yaml') {
+			const configPath = path.join(
+				__dirname,
+				`../fixtures/${template}-config/.commitlintrc.yaml`
+			);
+			const yaml = readFileSync(configPath, {encoding: 'utf-8'});
+			return `commitlint:\n${yaml.replace(/^/gm, '  ')}`;
+		} else {
+			const filePath = ['..', 'fixtures', `${template}-config`, filename];
 
-test('recursive extends with yaml file', async () => {
-	const cwd = await gitBootstrap('fixtures/recursive-extends-yaml');
-	const actual = await load({}, {cwd});
+			if (isEsm) {
+				filePath.splice(3, 0, 'esm');
+			}
 
-	expect(actual).toMatchObject({
-		formatter: '@commitlint/format',
-		extends: ['./first-extended'],
-		plugins: {},
-		rules: {
-			zero: 0,
-			one: 1,
-			two: 2,
-		},
-	});
-});
+			const configPath = path.join(__dirname, filePath.join('/'));
+			return readFileSync(configPath);
+		}
+	};
 
-test('recursive extends with js file', async () => {
-	const cwd = await gitBootstrap('fixtures/recursive-extends-js');
-	const actual = await load({}, {cwd});
+	const esmBootstrap = (cwd: string) => {
+		const packageJsonPath = path.join(cwd, 'package.json');
+		const packageJSON = JSON.parse(
+			readFileSync(packageJsonPath, {encoding: 'utf-8'})
+		);
 
-	expect(actual).toMatchObject({
-		formatter: '@commitlint/format',
-		extends: ['./first-extended'],
-		plugins: {},
-		rules: {
-			zero: 0,
-			one: 1,
-			two: 2,
-		},
-	});
-});
+		writeFileSync(
+			packageJsonPath,
+			JSON.stringify({
+				...packageJSON,
+				type: 'module',
+			})
+		);
+	};
 
-test('recursive extends with package.json file', async () => {
-	const cwd = await gitBootstrap('fixtures/recursive-extends-package');
-	const actual = await load({}, {cwd});
+	const templateFolder = [template, isExtendsTemplate ? 'js' : '', 'template']
+		.filter((elem) => elem)
+		.join('-');
 
-	expect(actual).toMatchObject({
-		formatter: '@commitlint/format',
-		extends: ['./first-extended'],
-		plugins: {},
-		rules: {
-			zero: 0,
-			one: 1,
-			two: 2,
-		},
+	test.each(
+		configTestCases
+			// Skip ESM tests for the extends suite until resolve-extends supports ESM
+			.filter(({isEsm}) => template !== 'extends' || !isEsm)
+			// Skip ESM tests if dynamic await is not supported; Jest will crash with a seg fault error
+			.filter(({isEsm}) => isDynamicAwaitSupported() || !isEsm)
+	)('$filename, ESM: $isEsm', async ({filename, isEsm}) => {
+		const cwd = await gitBootstrap(`fixtures/${templateFolder}`);
+
+		if (isEsm) {
+			esmBootstrap(cwd);
+		}
+
+		writeFileSync(
+			path.join(cwd, filename),
+			getConfigContents({filename, isEsm})
+		);
+
+		const actual = await load({}, {cwd});
+
+		expect(actual).toMatchObject({
+			formatter: '@commitlint/format',
+			extends: isExtendsTemplate ? ['./first-extended'] : [],
+			plugins: {},
+			rules: {
+				zero: [RuleConfigSeverity.Disabled, 'never'],
+				one: [RuleConfigSeverity.Warning, 'always'],
+				two: [RuleConfigSeverity.Error, 'never'],
+			},
+		});
 	});
 });
 
@@ -254,12 +352,12 @@ test('recursive extends with ts file', async () => {
 
 	expect(actual).toMatchObject({
 		formatter: '@commitlint/format',
-		extends: ['./first-extended'],
+		extends: ['./first-extended/index.ts'],
 		plugins: {},
 		rules: {
-			zero: [0, 'never', 'zero'],
-			one: [1, 'never', 'one'],
-			two: [2, 'never', 'two'],
+			zero: [RuleConfigSeverity.Disabled, 'never', 'zero'],
+			one: [RuleConfigSeverity.Warning, 'never', 'one'],
+			two: [RuleConfigSeverity.Error, 'never', 'two'],
 		},
 	});
 });
@@ -268,8 +366,9 @@ test('parser preset overwrites completely instead of merging', async () => {
 	const cwd = await gitBootstrap('fixtures/parser-preset-override');
 	const actual = await load({}, {cwd});
 
-	expect(actual.parserPreset.name).toBe('./custom');
-	expect(actual.parserPreset.parserOpts).toMatchObject({
+	expect(actual.parserPreset).toBeDefined();
+	expect(actual.parserPreset!.name).toBe('./custom');
+	expect(actual.parserPreset!.parserOpts).toMatchObject({
 		headerPattern: /.*/,
 	});
 });
@@ -278,13 +377,14 @@ test('recursive extends with parserPreset', async () => {
 	const cwd = await gitBootstrap('fixtures/recursive-parser-preset');
 	const actual = await load({}, {cwd});
 
-	expect(actual.parserPreset.name).toBe('./conventional-changelog-custom');
-	expect(actual.parserPreset.parserOpts).toMatchObject({
+	expect(actual.parserPreset).toBeDefined();
+	expect(actual.parserPreset!.name).toBe('./conventional-changelog-custom');
+	expect(actual.parserPreset!.parserOpts).toMatchObject({
 		headerPattern: /^(\w*)(?:\((.*)\))?-(.*)$/,
 	});
 });
 
-test('ignores unknow keys', async () => {
+test('ignores unknown keys', async () => {
 	const cwd = await gitBootstrap('fixtures/trash-file');
 	const actual = await load({}, {cwd});
 
@@ -293,13 +393,13 @@ test('ignores unknow keys', async () => {
 		extends: [],
 		plugins: {},
 		rules: {
-			foo: 'bar',
-			baz: 'bar',
+			foo: [RuleConfigSeverity.Warning, 'always', 'bar'],
+			baz: [RuleConfigSeverity.Warning, 'always', 'bar'],
 		},
 	});
 });
 
-test('ignores unknow keys recursively', async () => {
+test('ignores unknown keys recursively', async () => {
 	const cwd = await gitBootstrap('fixtures/trash-extend');
 	const actual = await load({}, {cwd});
 
@@ -308,8 +408,8 @@ test('ignores unknow keys recursively', async () => {
 		extends: ['./one'],
 		plugins: {},
 		rules: {
-			zero: 0,
-			one: 1,
+			zero: [RuleConfigSeverity.Disabled, 'always', 'zero'],
+			one: [RuleConfigSeverity.Warning, 'always', 'one'],
 		},
 	});
 });
@@ -325,9 +425,9 @@ test('find up from given cwd', async () => {
 		extends: [],
 		plugins: {},
 		rules: {
-			child: true,
-			inner: false,
-			outer: false,
+			child: [RuleConfigSeverity.Error, 'always', true],
+			inner: [RuleConfigSeverity.Error, 'always', false],
+			outer: [RuleConfigSeverity.Error, 'always', false],
 		},
 	});
 });
@@ -342,9 +442,9 @@ test('find up config from outside current git repo', async () => {
 		extends: [],
 		plugins: {},
 		rules: {
-			child: false,
-			inner: false,
-			outer: true,
+			child: [RuleConfigSeverity.Warning, 'never', false],
+			inner: [RuleConfigSeverity.Warning, 'never', false],
+			outer: [RuleConfigSeverity.Warning, 'never', true],
 		},
 	});
 });
@@ -366,7 +466,7 @@ test('resolves formatter relative from config directory', async () => {
 	const actual = await load({}, {cwd});
 
 	expect(actual).toMatchObject({
-		formatter: resolveFrom(cwd, './formatters/custom.js'),
+		formatter: resolveFrom('./formatters/custom.js', cwd),
 		extends: [],
 		plugins: {},
 		rules: {},
@@ -388,7 +488,9 @@ test('returns formatter name when unable to resolve from config directory', asyn
 test('does not mutate config module reference', async () => {
 	const file = 'config/commitlint.config.js';
 	const cwd = await gitBootstrap('fixtures/specify-config-file');
-	const rules = {'body-case': [1, 'never', 'camel-case'] as any};
+	const rules = {
+		'body-case': [RuleConfigSeverity.Warning, 'never', 'camel-case'] as any,
+	};
 
 	const configPath = path.join(cwd, file);
 	const before = JSON.stringify(require(configPath));
@@ -402,11 +504,12 @@ test('resolves parser preset from conventional commits', async () => {
 	const cwd = await npmBootstrap('fixtures/parser-preset-conventionalcommits');
 	const actual = await load({}, {cwd});
 
-	expect(actual.parserPreset.name).toBe(
+	expect(actual.parserPreset).toBeDefined();
+	expect(actual.parserPreset!.name).toBe(
 		'conventional-changelog-conventionalcommits'
 	);
-	expect(typeof actual.parserPreset.parserOpts).toBe('object');
-	expect((actual.parserPreset.parserOpts as any).headerPattern).toEqual(
+	expect(typeof actual.parserPreset!.parserOpts).toBe('object');
+	expect((actual.parserPreset!.parserOpts as any).headerPattern).toEqual(
 		/^(\w*)(?:\((.*)\))?!?: (.*)$/
 	);
 });
@@ -415,9 +518,10 @@ test('resolves parser preset from conventional angular', async () => {
 	const cwd = await npmBootstrap('fixtures/parser-preset-angular');
 	const actual = await load({}, {cwd});
 
-	expect(actual.parserPreset.name).toBe('conventional-changelog-angular');
-	expect(typeof actual.parserPreset.parserOpts).toBe('object');
-	expect((actual.parserPreset.parserOpts as any).headerPattern).toEqual(
+	expect(actual.parserPreset).toBeDefined();
+	expect(actual.parserPreset!.name).toBe('conventional-changelog-angular');
+	expect(typeof actual.parserPreset!.parserOpts).toBe('object');
+	expect((actual.parserPreset!.parserOpts as any).headerPattern).toEqual(
 		/^(\w*)(?:\((.*)\))?: (.*)$/
 	);
 });
@@ -432,9 +536,10 @@ test('recursive resolves parser preset from conventional atom', async () => {
 
 	const actual = await load({}, {cwd});
 
-	expect(actual.parserPreset.name).toBe('conventional-changelog-atom');
-	expect(typeof actual.parserPreset.parserOpts).toBe('object');
-	expect((actual.parserPreset.parserOpts as any).headerPattern).toEqual(
+	expect(actual.parserPreset).toBeDefined();
+	expect(actual.parserPreset!.name).toBe('conventional-changelog-atom');
+	expect(typeof actual.parserPreset!.parserOpts).toBe('object');
+	expect((actual.parserPreset!.parserOpts as any).headerPattern).toEqual(
 		/^(:.*?:) (.*)$/
 	);
 });
@@ -445,11 +550,30 @@ test('resolves parser preset from conventional commits without factory support',
 	);
 	const actual = await load({}, {cwd});
 
-	expect(actual.parserPreset.name).toBe(
+	expect(actual.parserPreset).toBeDefined();
+	expect(actual.parserPreset!.name).toBe(
 		'conventional-changelog-conventionalcommits'
 	);
-	expect(typeof actual.parserPreset.parserOpts).toBe('object');
-	expect((actual.parserPreset.parserOpts as any).headerPattern).toEqual(
+	expect(typeof actual.parserPreset!.parserOpts).toBe('object');
+	expect((actual.parserPreset!.parserOpts as any).headerPattern).toEqual(
 		/^(\w*)(?:\((.*)\))?!?: (.*)$/
+	);
+});
+
+test('helpUrl should be loaded from the shareable config', async () => {
+	const cwd = await gitBootstrap('fixtures/help-url');
+	const actual = await load({}, {cwd});
+
+	expect(actual.helpUrl).toStrictEqual(
+		'https://github.com/conventional-changelog/commitlint'
+	);
+});
+
+test('default helpUrl should be loaded if not provided in shareable configs', async () => {
+	const cwd = await gitBootstrap('fixtures/basic');
+	const actual = await load({}, {cwd});
+
+	expect(actual.helpUrl).toStrictEqual(
+		'https://github.com/conventional-changelog/commitlint/#what-is-commitlint'
 	);
 });

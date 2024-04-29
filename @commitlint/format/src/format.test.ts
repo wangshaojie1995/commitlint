@@ -1,4 +1,6 @@
-import {format, formatResult} from '.';
+import {test, expect} from 'vitest';
+
+import {format, formatResult} from './index.js';
 
 test('does nothing without arguments', () => {
 	const actual = format();
@@ -31,6 +33,29 @@ test('returns empty summary if verbose', () => {
 	);
 
 	expect(actual).toContain('0 problems, 0 warnings');
+});
+
+test('returns empty summary with full commit message if verbose', () => {
+	const actual = format(
+		{
+			results: [
+				{
+					errors: [],
+					warnings: [],
+					input:
+						'feat(cli): this is a valid header\n\nThis is a valid body\n\nSigned-off-by: tester',
+				},
+			],
+		},
+		{
+			verbose: true,
+			color: false,
+		}
+	);
+
+	expect(actual).toStrictEqual(
+		'⧗   input: feat(cli): this is a valid header\n\nThis is a valid body\n\nSigned-off-by: tester\n✔   found 0 problems, 0 warnings'
+	);
 });
 
 test('returns a correct summary of empty .errors and .warnings', () => {
@@ -252,6 +277,27 @@ test('format result omits help for empty problems', () => {
 	const actual = formatResult({
 		warnings: [],
 	});
+
+	expect(actual).not.toEqual(
+		expect.arrayContaining([expect.stringContaining('Get help:')])
+	);
+});
+
+test('format result should not contain `Get help` prefix if helpUrl is not provided', () => {
+	const actual = formatResult(
+		{
+			warnings: [
+				{
+					level: 2,
+					name: 'warning-name',
+					message: 'There was a warning',
+				},
+			],
+		},
+		{
+			helpUrl: '',
+		}
+	);
 
 	expect(actual).not.toEqual(
 		expect.arrayContaining([expect.stringContaining('Get help:')])

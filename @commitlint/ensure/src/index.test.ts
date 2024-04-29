@@ -1,11 +1,17 @@
+import {test, expect} from 'vitest';
 import path from 'path';
-import globby from 'globby';
-import camelCase from 'lodash/camelCase';
-import * as ensure from '.';
+import {fileURLToPath} from 'url';
+
+import {globSync} from 'glob';
+import camelCase from 'lodash.camelcase';
+
+import * as ensure from './index.js';
+
+const __dirname = path.resolve(fileURLToPath(import.meta.url), '..');
 
 test('exports all checkers', async () => {
 	const ignore = ['types'];
-	const expected = (await glob('*.ts'))
+	const expected = _glob('*.ts')
 		.map((f) => camelCase(f))
 		.sort()
 		.filter((item) => !ignore.includes(item));
@@ -18,8 +24,8 @@ test('rules export functions', () => {
 	expect(actual.every((rule) => typeof rule === 'function')).toBe(true);
 });
 
-async function glob(pattern: string): Promise<string[]> {
-	const files = await globby(pattern, {
+function _glob(pattern: string): string[] {
+	const files = globSync(pattern, {
 		ignore: ['**/index.ts', '**/*.test.ts'],
 		cwd: __dirname,
 	});

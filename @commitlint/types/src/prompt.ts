@@ -16,6 +16,10 @@ export type PromptName =
 	| 'issues';
 
 export type PromptConfig = {
+	settings: {
+		scopeEnumSeparator: string;
+		enableMultipleScopes: boolean;
+	};
 	messages: PromptMessages;
 	questions: Partial<
 		Record<

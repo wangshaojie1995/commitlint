@@ -1,8 +1,16 @@
-import {fix, git} from '@commitlint/test';
-import execa from 'execa';
-import fs from 'fs-extra';
-import merge from 'lodash/merge';
+import {describe, test, expect} from 'vitest';
+import {createRequire} from 'module';
 import path from 'path';
+import {fileURLToPath} from 'url';
+
+import {fix, git} from '@commitlint/test';
+import {execa} from 'execa';
+import fs from 'fs-extra';
+import merge from 'lodash.merge';
+
+const require = createRequire(import.meta.url);
+
+const __dirname = path.resolve(fileURLToPath(import.meta.url), '..');
 
 const bin = require.resolve('../cli.js');
 
@@ -41,6 +49,26 @@ test('should produce success output with --verbose flag', async () => {
 	const cwd = await gitBootstrap('fixtures/default');
 	const actual = await cli(['--verbose'], {cwd})('type: bar');
 	expect(actual.stdout).toContain('0 problems, 0 warnings');
+	expect(actual.stderr).toEqual('');
+});
+
+test('should produce last commit and success output with --verbose flag', async () => {
+	const cwd = await gitBootstrap('fixtures/simple');
+	await execa('git', ['add', 'commitlint.config.js'], {cwd});
+	await execa('git', ['commit', '-m', '"test: this should work"'], {cwd});
+	const actual = await cli(['--last', '--verbose'], {cwd})();
+	expect(actual.stdout).toContain('0 problems, 0 warnings');
+	expect(actual.stdout).toContain('test: this should work');
+	expect(actual.stderr).toEqual('');
+});
+
+test('regression test for running with --last flag', async () => {
+	const cwd = await gitBootstrap('fixtures/last-flag-regression');
+	await execa('git', ['add', 'commitlint.config.js'], {cwd});
+	await execa('git', ['commit', '-m', '"test: this should work"'], {cwd});
+	const actual = await cli(['--last', '--verbose'], {cwd})();
+	expect(actual.stdout).toContain('0 problems, 0 warnings');
+	expect(actual.stdout).toContain('test: this should work');
 	expect(actual.stderr).toEqual('');
 });
 
@@ -329,13 +357,50 @@ test('should handle --amend with signoff', async () => {
 	expect(commit).toBeTruthy();
 }, 10000);
 
-test('should fail with an empty message and a commentChar is set', async () => {
+test('it uses parserOpts.commentChar when not using edit mode', async () => {
 	const cwd = await gitBootstrap('fixtures/comment-char');
-	await execa('git', ['config', '--local', 'core.commentChar', '$'], {cwd});
-	await fs.writeFile(path.join(cwd, '.git', 'COMMIT_EDITMSG'), '#1234');
+	const input = 'header: foo\n$body\n';
+
+	const actual = await cli([], {cwd})(input);
+	expect(actual.stdout).toContain('[body-empty]');
+	expect(actual.exitCode).toBe(1);
+});
+
+test("it doesn't use parserOpts.commentChar when using edit mode", async () => {
+	const cwd = await gitBootstrap('fixtures/comment-char');
+	await fs.writeFile(
+		path.join(cwd, '.git', 'COMMIT_EDITMSG'),
+		'header: foo\n\n$body\n'
+	);
 
 	const actual = await cli(['--edit', '.git/COMMIT_EDITMSG'], {cwd})();
-	expect(actual.stdout).toContain('[subject-empty]');
+	expect(actual.stdout).not.toContain('[body-empty]');
+	expect(actual.exitCode).toBe(0);
+});
+
+test('it uses core.commentChar git config when using edit mode', async () => {
+	const cwd = await gitBootstrap('fixtures/comment-char');
+	await execa('git', ['config', '--local', 'core.commentChar', '$'], {cwd});
+	await fs.writeFile(
+		path.join(cwd, '.git', 'COMMIT_EDITMSG'),
+		'header: foo\n\n$body\n'
+	);
+
+	const actual = await cli(['--edit', '.git/COMMIT_EDITMSG'], {cwd})();
+	expect(actual.stdout).toContain('[body-empty]');
+	expect(actual.exitCode).toBe(1);
+});
+
+test('it falls back to # for core.commentChar when using edit mode', async () => {
+	const cwd = await gitBootstrap('fixtures/comment-char');
+	await fs.writeFile(
+		path.join(cwd, '.git', 'COMMIT_EDITMSG'),
+		'header: foo\n\n#body\n'
+	);
+
+	const actual = await cli(['--edit', '.git/COMMIT_EDITMSG'], {cwd})();
+	expect(actual.stdout).toContain('[body-empty]');
+	expect(actual.stderr).toEqual('');
 	expect(actual.exitCode).toBe(1);
 });
 
@@ -445,6 +510,24 @@ test('should work with relative formatter path', async () => {
 	expect(actual.exitCode).toBe(0);
 });
 
+test('strict: should exit with 3 on error', async () => {
+	const cwd = await gitBootstrap('fixtures/warning');
+	const actual = await cli(['--strict'], {cwd})('foo: abcdef');
+	expect(actual.exitCode).toBe(3);
+});
+
+test('strict: should exit with 2 on warning', async () => {
+	const cwd = await gitBootstrap('fixtures/warning');
+	const actual = await cli(['--strict'], {cwd})('feat: abcdef');
+	expect(actual.exitCode).toBe(2);
+});
+
+test('strict: should exit with 0 on success', async () => {
+	const cwd = await gitBootstrap('fixtures/warning');
+	const actual = await cli(['--strict'], {cwd})('feat: abc');
+	expect(actual.exitCode).toBe(0);
+});
+
 test('should print help', async () => {
 	const cwd = await gitBootstrap('fixtures/default');
 	const actual = await cli(['--help'], {cwd})();
@@ -456,29 +539,25 @@ test('should print help', async () => {
 		[input] reads from stdin if --edit, --env, --from and --to are omitted
 
 		Options:
-		  -c, --color          toggle colored output           [boolean] [default: true]
-		  -g, --config         path to the config file                          [string]
-		      --print-config   print resolved config          [boolean] [default: false]
-		  -d, --cwd            directory to execute in
-		                                         [string] [default: (Working Directory)]
-		  -e, --edit           read last commit message from the specified file or
-		                       fallbacks to ./.git/COMMIT_EDITMSG               [string]
-		  -E, --env            check message in the file at path given by environment
-		                       variable value                                   [string]
-		  -x, --extends        array of shareable configurations to extend       [array]
-		  -H, --help-url       help url in error message                        [string]
-		  -f, --from           lower end of the commit range to lint; applies if
-		                       edit=false                                       [string]
-		  -o, --format         output format of the results                     [string]
-		  -p, --parser-preset  configuration preset to use for
-		                       conventional-commits-parser                      [string]
-		  -q, --quiet          toggle console output          [boolean] [default: false]
-		  -t, --to             upper end of the commit range to lint; applies if
-		                       edit=false                                       [string]
-		  -V, --verbose        enable verbose output for reports without problems
-		                                                                       [boolean]
-		  -v, --version        display version information                     [boolean]
-		  -h, --help           Show help                                       [boolean]"
+		  -c, --color          toggle colored output  [boolean] [default: true]
+		  -g, --config         path to the config file  [string]
+		      --print-config   print resolved config  [string] [choices: "", "text", "json"]
+		  -d, --cwd            directory to execute in  [string] [default: (Working Directory)]
+		  -e, --edit           read last commit message from the specified file or fallbacks to ./.git/COMMIT_EDITMSG  [string]
+		  -E, --env            check message in the file at path given by environment variable value  [string]
+		  -x, --extends        array of shareable configurations to extend  [array]
+		  -H, --help-url       help url in error message  [string]
+		  -f, --from           lower end of the commit range to lint; applies if edit=false  [string]
+		      --git-log-args   additional git log arguments as space separated string, example '--first-parent --cherry-pick'  [string]
+		  -l, --last           just analyze the last commit; applies if edit=false  [boolean]
+		  -o, --format         output format of the results  [string]
+		  -p, --parser-preset  configuration preset to use for conventional-commits-parser  [string]
+		  -q, --quiet          toggle console output  [boolean] [default: false]
+		  -t, --to             upper end of the commit range to lint; applies if edit=false  [string]
+		  -V, --verbose        enable verbose output for reports without problems  [boolean]
+		  -s, --strict         enable strict mode; result code 2 for warnings, 3 for errors  [boolean]
+		  -v, --version        display version information  [boolean]
+		  -h, --help           Show help  [boolean]"
 	`);
 });
 
@@ -488,14 +567,16 @@ test('should print version', async () => {
 	expect(actual.stdout).toMatch('@commitlint/cli@');
 });
 
-test('should print config', async () => {
-	const cwd = await gitBootstrap('fixtures/default');
-	const actual = await cli(['--print-config', '--no-color'], {cwd})();
-	const stdout = actual.stdout
-		.replace(/^{[^\n]/g, '{\n  ')
-		.replace(/[^\n]}$/g, '\n}')
-		.replace(/(helpUrl:)\n[ ]+/, '$1 ');
-	expect(stdout).toMatchInlineSnapshot(`
+describe('should print config', () => {
+	test('should print config when flag is present but without value', async () => {
+		const cwd = await gitBootstrap('fixtures/default');
+		const actual = await cli(['--print-config', 'text', '--no-color'], {cwd})();
+
+		const stdout = actual.stdout
+			.replace(/^{[^\n]/g, '{\n  ')
+			.replace(/[^\n]}$/g, '\n}')
+			.replace(/(helpUrl:)\n[ ]+/, '$1 ');
+		expect(stdout).toMatchInlineSnapshot(`
 		"{
 		  extends: [],
 		  formatter: '@commitlint/format',
@@ -508,6 +589,39 @@ test('should print config', async () => {
 		  prompt: {}
 		}"
 	`);
+	});
+
+	test('should print config when flag has `text` value', async () => {
+		const cwd = await gitBootstrap('fixtures/default');
+		const actual = await cli(['--print-config=text', '--no-color'], {cwd})();
+
+		const stdout = actual.stdout
+			.replace(/^{[^\n]/g, '{\n  ')
+			.replace(/[^\n]}$/g, '\n}')
+			.replace(/(helpUrl:)\n[ ]+/, '$1 ');
+		expect(stdout).toMatchInlineSnapshot(`
+		"{
+		  extends: [],
+		  formatter: '@commitlint/format',
+		  parserPreset: undefined,
+		  ignores: undefined,
+		  defaultIgnores: undefined,
+		  plugins: {},
+		  rules: { 'type-enum': [ 2, 'never', [ 'foo' ] ] },
+		  helpUrl: 'https://github.com/conventional-changelog/commitlint/#what-is-commitlint',
+		  prompt: {}
+		}"
+	`);
+	});
+
+	test('should print config when flag has `json` value', async () => {
+		const cwd = await gitBootstrap('fixtures/default');
+		const actual = await cli(['--print-config=json', '--no-color'], {cwd})();
+
+		expect(actual.stdout).toMatchInlineSnapshot(
+			`"{"extends":[],"formatter":"@commitlint/format","plugins":{},"rules":{"type-enum":[2,"never",["foo"]]},"helpUrl":"https://github.com/conventional-changelog/commitlint/#what-is-commitlint","prompt":{}}"`
+		);
+	});
 });
 
 async function writePkg(payload: unknown, options: TestOptions) {

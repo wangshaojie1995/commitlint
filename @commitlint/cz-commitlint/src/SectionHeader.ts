@@ -1,7 +1,9 @@
 import {PromptName, RuleField} from '@commitlint/types';
 import {Answers, DistinctQuestion} from 'inquirer';
-import Question, {QuestionConfig} from './Question';
-import getRuleQuestionConfig from './services/getRuleQuestionConfig';
+
+import Question, {QuestionConfig} from './Question.js';
+import getRuleQuestionConfig from './services/getRuleQuestionConfig.js';
+import {getPromptSettings} from './store/prompts.js';
 
 export class HeaderQuestion extends Question {
 	headerMaxLength: number;
@@ -47,7 +49,7 @@ export function getQuestions(): Array<DistinctQuestion> {
 	}
 
 	headerRuleFields.forEach((name) => {
-		const questionConfig = getRuleQuestionConfig(name);
+		const questionConfig = getQuestionConfig(name);
 		if (questionConfig) {
 			const instance = new HeaderQuestion(
 				name,
@@ -59,4 +61,23 @@ export function getQuestions(): Array<DistinctQuestion> {
 		}
 	});
 	return questions;
+}
+
+export function getQuestionConfig(
+	name: RuleField
+): ReturnType<typeof getRuleQuestionConfig> {
+	const questionConfig = getRuleQuestionConfig(name);
+
+	if (questionConfig) {
+		if (name === 'scope') {
+			if (getPromptSettings()['enableMultipleScopes']) {
+				questionConfig.multipleSelectDefaultDelimiter =
+					getPromptSettings()['scopeEnumSeparator'];
+			}
+			// split scope string to segments, match commitlint rules
+			questionConfig.multipleValueDelimiters = /\/|\\|,/g;
+		}
+	}
+
+	return questionConfig;
 }

@@ -1,7 +1,18 @@
+import {describe, test, expect, beforeEach} from 'vitest';
 import {RuleConfigSeverity} from '@commitlint/types';
-import {combineCommitMessage, getQuestions} from './SectionHeader';
-import {setPromptConfig} from './store/prompts';
-import {setRules} from './store/rules';
+
+import {
+	combineCommitMessage,
+	getQuestions,
+	getQuestionConfig,
+} from './SectionHeader.js';
+import {setPromptConfig} from './store/prompts.js';
+import {setRules} from './store/rules.js';
+
+beforeEach(() => {
+	setRules({});
+	setPromptConfig({});
+});
 describe('getQuestions', () => {
 	test("should contain 'type','scope','subject'", () => {
 		const questions = getQuestions();
@@ -33,6 +44,37 @@ describe('getQuestions', () => {
 				name: 'subject',
 			}),
 		]);
+	});
+});
+
+describe('getQuestionConfig', () => {
+	test("should 'scope' supports multiple items separated with ',\\/'", () => {
+		const config = getQuestionConfig('scope');
+		expect(config).toEqual(
+			expect.objectContaining({
+				multipleValueDelimiters: /\/|\\|,/g,
+			})
+		);
+	});
+
+	test("should 'scope' supports multiple select separated with settings.scopeEnumSeparator and enableMultipleScopes", () => {
+		setPromptConfig({
+			settings: {
+				scopeEnumSeparator: '/',
+				enableMultipleScopes: true,
+			},
+		});
+		const config = getQuestionConfig('scope');
+		expect(config).toEqual(
+			expect.objectContaining({
+				multipleSelectDefaultDelimiter: '/',
+			})
+		);
+	});
+
+	test("should 'scope' disable multiple select by default", () => {
+		const config = getQuestionConfig('scope');
+		expect(config).not.toContain('multipleSelectDefaultDelimiter');
 	});
 });
 

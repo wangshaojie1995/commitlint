@@ -42,9 +42,8 @@ function formatInput(
 
 	const sign = '⧗';
 	const decoration = enabled ? chalk.gray(sign) : sign;
-	const commitText = errors.length > 0 ? input : input.split('\n')[0];
 
-	const decoratedInput = enabled ? chalk.bold(commitText) : commitText;
+	const decoratedInput = enabled ? chalk.bold(input) : input;
 	const hasProblems = errors.length > 0 || warnings.length > 0;
 
 	return options.verbose || hasProblems
@@ -89,14 +88,17 @@ export function formatResult(
 	const fmtSummary =
 		enabled && typeof summary === 'string' ? chalk.bold(summary) : summary;
 
-	const help = hasProblems ? `ⓘ   Get help: ${options.helpUrl}` : undefined;
+	const help =
+		hasProblems && options.helpUrl
+			? `ⓘ   Get help: ${options.helpUrl}`
+			: undefined;
 
 	return [
 		...problems,
 		hasProblems ? '' : undefined,
 		fmtSummary,
 		help,
-		help ? '' : undefined,
+		hasProblems ? '' : undefined,
 	].filter((line): line is string => typeof line === 'string');
 }
 

@@ -1,4 +1,4 @@
-import * as semver from 'semver';
+import semver from 'semver';
 import {Matcher} from '@commitlint/types';
 
 const isSemver = (c: string): boolean => {
@@ -18,8 +18,9 @@ export const wildcards: Matcher[] = [
 	test(
 		/^((Merge pull request)|(Merge (.*?) into (.*?)|(Merge branch (.*?)))(?:\r?\n)*$)/m
 	),
+	test(/^(Merge tag (.*?))(?:\r?\n)*$/m),
 	test(/^(R|r)evert (.*)/),
-	test(/^(fixup|squash)!/),
+	test(/^(amend|fixup|squash)!/),
 	isSemver,
 	test(/^(Merged (.*?)(in|into) (.*)|Merged PR (.*): (.*))/),
 	test(/^Merge remote-tracking branch(\s*)(.*)/),

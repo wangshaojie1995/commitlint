@@ -1,8 +1,9 @@
 import {PromptMessages, PromptName} from '@commitlint/types';
 import chalk from 'chalk';
 import inquirer, {Answers, ChoiceCollection, DistinctQuestion} from 'inquirer';
-import {CaseFn} from './utils/case-fn';
-import {FullStopFn} from './utils/full-stop-fn';
+
+import {CaseFn} from './utils/case-fn.js';
+import {FullStopFn} from './utils/full-stop-fn.js';
 
 export type QuestionConfig = {
 	title: string;
@@ -16,6 +17,8 @@ export type QuestionConfig = {
 		name: string;
 		value: string;
 	}> | null;
+	multipleValueDelimiters?: RegExp;
+	multipleSelectDefaultDelimiter?: string;
 	fullStopFn?: FullStopFn;
 	caseFn?: CaseFn;
 };
@@ -29,6 +32,8 @@ export default class Question {
 	private title: string;
 	private caseFn: CaseFn;
 	private fullStopFn: FullStopFn;
+	private multipleValueDelimiters?: RegExp;
+	private multipleSelectDefaultDelimiter?: string;
 	constructor(
 		name: PromptName,
 		{
@@ -42,6 +47,8 @@ export default class Question {
 			caseFn,
 			maxLength,
 			minLength,
+			multipleValueDelimiters,
+			multipleSelectDefaultDelimiter,
 		}: QuestionConfig
 	) {
 		if (!name || typeof name !== 'string')
@@ -53,11 +60,16 @@ export default class Question {
 		this.title = title ?? '';
 		this.skip = skip ?? false;
 		this.fullStopFn = fullStopFn ?? ((_: string) => _);
-		this.caseFn = caseFn ?? ((_: string) => _);
+		this.caseFn =
+			caseFn ??
+			((input: string | string[], delimiter?: string) =>
+				Array.isArray(input) ? input.join(delimiter) : input);
+		this.multipleValueDelimiters = multipleValueDelimiters;
+		this.multipleSelectDefaultDelimiter = multipleSelectDefaultDelimiter;
 
 		if (enumList && Array.isArray(enumList)) {
 			this._question = {
-				type: 'list',
+				type: multipleSelectDefaultDelimiter ? 'checkbox' : 'list',
 				choices: skip
 					? [
 							...enumList,
@@ -140,8 +152,25 @@ export default class Question {
 		return true;
 	}
 
-	protected filter(input: string): string {
-		return this.caseFn(this.fullStopFn(input));
+	protected filter(input: string | string[]): string {
+		let toCased;
+		if (Array.isArray(input)) {
+			toCased = this.caseFn(input, this.multipleSelectDefaultDelimiter);
+		} else if (this.multipleValueDelimiters) {
+			const segments = input.split(this.multipleValueDelimiters);
+			const casedString = this.caseFn(segments, ',');
+			const casedSegments = casedString.split(',');
+			toCased = input.replace(
+				new RegExp(`[^${this.multipleValueDelimiters.source}]+`, 'g'),
+				(segment) => {
+					return casedSegments[segments.indexOf(segment)];
+				}
+			);
+		} else {
+			toCased = this.caseFn(input);
+		}
+
+		return this.fullStopFn(toCased);
 	}
 
 	protected transformer(input: string, _answers: Answers): string {
@@ -154,7 +183,7 @@ export default class Question {
 			output.length <= this.maxLength && output.length >= this.minLength
 				? chalk.green
 				: chalk.red;
-		return color('(' + output.length + ') ' + input);
+		return color('(' + output.length + ') ' + output);
 	}
 
 	protected decorateMessage(_answers: Answers): string {
