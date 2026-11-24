@@ -3,6 +3,183 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [21.2.3](https://github.com/conventional-changelog/commitlint/compare/v21.2.2...v21.2.3) (2026-09-19)
+
+**Note:** Version bump only for package @commitlint/read
+
+
+
+
+
+## [21.2.1](https://github.com/conventional-changelog/commitlint/compare/v21.2.0...v21.2.1) (2026-07-08)
+
+**Note:** Version bump only for package @commitlint/read
+
+
+
+
+
+# [21.2.0](https://github.com/conventional-changelog/commitlint/compare/v21.1.0...v21.2.0) (2026-06-30)
+
+**Note:** Version bump only for package @commitlint/read
+
+
+
+
+
+# [21.1.0](https://github.com/conventional-changelog/commitlint/compare/v21.0.2...v21.1.0) (2026-06-23)
+
+**Note:** Version bump only for package @commitlint/read
+
+
+
+
+
+## [21.0.2](https://github.com/conventional-changelog/commitlint/compare/v21.0.1...v21.0.2) (2026-05-29)
+
+
+### Bug Fixes
+
+* apply oxfmt formatting to get-edit-commit.ts ([#4768](https://github.com/conventional-changelog/commitlint/issues/4768)) ([1af3138](https://github.com/conventional-changelog/commitlint/commit/1af313897e0ba1626b9901387905ace902a63e1b)), closes [#4755](https://github.com/conventional-changelog/commitlint/issues/4755)
+* emit actionable error when --edit cannot find COMMIT_EDITMSG ([#589](https://github.com/conventional-changelog/commitlint/issues/589)) ([#4755](https://github.com/conventional-changelog/commitlint/issues/4755)) ([bb10907](https://github.com/conventional-changelog/commitlint/commit/bb1090717410ed702847f9d569ce3ad9eee51d41))
+* **read:** fail when --from and --to share no merge-base [#4555](https://github.com/conventional-changelog/commitlint/issues/4555) ([#4754](https://github.com/conventional-changelog/commitlint/issues/4754)) ([e4595eb](https://github.com/conventional-changelog/commitlint/commit/e4595eb79e67a3c51960e95b1dcc696754312cdb))
+
+
+
+
+
+## [21.0.1](https://github.com/conventional-changelog/commitlint/compare/v21.0.0...v21.0.1) (2026-05-12)
+
+**Note:** Version bump only for package @commitlint/read
+
+
+
+
+
+# [21.0.0](https://github.com/conventional-changelog/commitlint/compare/v20.5.3...v21.0.0) (2026-05-08)
+
+
+* chore!: minimum node version v22 (#4679) ([ac2b3f4](https://github.com/conventional-changelog/commitlint/commit/ac2b3f4a947670e46af9a738881ba14158f0987a)), closes [#4679](https://github.com/conventional-changelog/commitlint/issues/4679)
+
+
+### BREAKING CHANGES
+
+* drop node v18 and v20 support
+
+- Bump engines to >=v22 in all 39 package.json files
+- Update @types/node to ^22.0.0
+- Update CI matrix to [22, 24]
+- Update Ubuntu baseline job to ubuntu:26.04
+- Update Dockerfile.ci, .mise.toml, .codesandbox/ci.json
+- Update pre-commit hook to use --ignore-engines
+- Update README and docs
+
+Co-authored-by: Claude Opus 4.6 (1M context) <noreply@anthropic.com>
+
+
+
+
+
+# [20.5.0](https://github.com/conventional-changelog/commitlint/compare/v20.4.4...v20.5.0) (2026-03-15)
+
+**Note:** Version bump only for package @commitlint/read
+
+
+
+
+
+## [20.4.4](https://github.com/conventional-changelog/commitlint/compare/v20.4.3...v20.4.4) (2026-03-12)
+
+
+### Bug Fixes
+
+* **read:** update git-raw-commits to v5 API ([#4638](https://github.com/conventional-changelog/commitlint/issues/4638)) ([bd6ab41](https://github.com/conventional-changelog/commitlint/commit/bd6ab41740210215d92bc10fa93184325bc970a6))
+
+
+
+
+
+## [20.4.3](https://github.com/conventional-changelog/commitlint/compare/v20.4.2...v20.4.3) (2026-03-03)
+
+**Note:** Version bump only for package @commitlint/read
+
+
+
+
+
+# [20.4.0](https://github.com/conventional-changelog/commitlint/compare/v20.3.1...v20.4.0) (2026-01-30)
+
+**Note:** Version bump only for package @commitlint/read
+
+
+
+
+
+## [20.3.1](https://github.com/conventional-changelog/commitlint/compare/v20.3.0...v20.3.1) (2026-01-08)
+
+**Note:** Version bump only for package @commitlint/read
+
+
+
+
+
+# [20.2.0](https://github.com/conventional-changelog/commitlint/compare/v20.1.0...v20.2.0) (2025-12-05)
+
+**Note:** Version bump only for package @commitlint/read
+
+
+
+
+
+# [20.0.0](https://github.com/conventional-changelog/commitlint/compare/v19.9.1...v20.0.0) (2025-09-25)
+
+**Note:** Version bump only for package @commitlint/read
+
+
+
+
+
+## [19.8.1](https://github.com/conventional-changelog/commitlint/compare/v19.8.0...v19.8.1) (2025-05-08)
+
+
+### Bug Fixes
+
+* update dependency tinyexec to v1 ([#4332](https://github.com/conventional-changelog/commitlint/issues/4332)) ([e49449f](https://github.com/conventional-changelog/commitlint/commit/e49449fa9452069cdbf194f94d536194d362a299))
+
+
+
+
+
+# [19.8.0](https://github.com/conventional-changelog/commitlint/compare/v19.7.1...v19.8.0) (2025-03-07)
+
+
+### Performance Improvements
+
+* use `node:` prefix to bypass require.cache call for builtins ([#4302](https://github.com/conventional-changelog/commitlint/issues/4302)) ([0cd8f41](https://github.com/conventional-changelog/commitlint/commit/0cd8f410573fe11383f788b1ceb7e0946143591d))
+
+
+
+
+
+# [19.5.0](https://github.com/conventional-changelog/commitlint/compare/v19.4.1...v19.5.0) (2024-09-11)
+
+**Note:** Version bump only for package @commitlint/read
+
+
+
+
+
+# [19.4.0](https://github.com/conventional-changelog/commitlint/compare/v19.3.1...v19.4.0) (2024-08-07)
+
+
+### Features
+
+* support linting from the last tag ([#4110](https://github.com/conventional-changelog/commitlint/issues/4110)) ([4b204ec](https://github.com/conventional-changelog/commitlint/commit/4b204ecfb43dd6a00e24b51111aadbd78f9d58e1))
+
+
+
+
+
 ## [19.2.1](https://github.com/conventional-changelog/commitlint/compare/v19.2.0...v19.2.1) (2024-03-19)
 
 **Note:** Version bump only for package @commitlint/read

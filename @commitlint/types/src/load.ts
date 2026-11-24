@@ -1,11 +1,5 @@
-import {UserPromptConfig} from './prompt.js';
-import {
-	AsyncRule,
-	Rule,
-	RuleConfigQuality,
-	RulesConfig,
-	SyncRule,
-} from './rules.js';
+import { UserPromptConfig } from "./prompt.js";
+import { AsyncRule, Rule, RuleConfigQuality, RulesConfig, SyncRule } from "./rules.js";
 
 export type PluginRecords = Record<string, Plugin>;
 
@@ -51,4 +45,6 @@ export interface ParserPreset {
 	name?: string;
 	path?: string;
 	parserOpts?: unknown;
+	parser?: unknown;
+	presetConfig?: unknown;
 }

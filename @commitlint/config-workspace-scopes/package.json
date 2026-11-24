@@ -1,0 +1,37 @@
+{
+  "name": "@commitlint/config-workspace-scopes",
+  "version": "21.2.0",
+  "gitHead": "e82f05a737626bb69979d14564f5ff601997f679",
+  "description": "Shareable commitlint config enforcing workspace names as scopes",
+  "keywords": [
+    "commitlint",
+    "commitlint-config",
+    "conventional-changelog",
+    "npm-workspaces",
+    "yarn-workspaces"
+  ],
+  "homepage": "https://commitlint.js.org/",
+  "bugs": {
+    "url": "https://github.com/conventional-changelog/commitlint/issues"
+  },
+  "license": "MIT",
+  "author": "Jan Biasi (https://github.com/janbiasi)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/conventional-changelog/commitlint.git",
+    "directory": "@commitlint/config-lerna-scopes"
+  },
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "deps": "dep-check",
+    "pkg": "pkg-check"
+  },
+  "devDependencies": {
+    "@commitlint/test": "workspace:^",
+    "@commitlint/utils": "workspace:^"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  }
+}

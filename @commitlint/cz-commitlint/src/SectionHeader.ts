@@ -1,9 +1,9 @@
-import {PromptName, RuleField} from '@commitlint/types';
-import {Answers, DistinctQuestion} from 'inquirer';
+import { PromptName, RuleField } from "@commitlint/types";
+import { Answers, DistinctQuestion } from "inquirer";
 
-import Question, {QuestionConfig} from './Question.js';
-import getRuleQuestionConfig from './services/getRuleQuestionConfig.js';
-import {getPromptSettings} from './store/prompts.js';
+import Question, { QuestionConfig } from "./Question.js";
+import getRuleQuestionConfig from "./services/getRuleQuestionConfig.js";
+import { getPromptSettings } from "./store/prompts.js";
 
 export class HeaderQuestion extends Question {
 	headerMaxLength: number;
@@ -12,26 +12,31 @@ export class HeaderQuestion extends Question {
 		name: PromptName,
 		questionConfig: QuestionConfig,
 		headerMaxLength?: number,
-		headerMinLength?: number
+		headerMinLength?: number,
 	) {
 		super(name, questionConfig);
 		this.headerMaxLength = headerMaxLength ?? Infinity;
 		this.headerMinLength = headerMinLength ?? 0;
 	}
 	beforeQuestionStart(answers: Answers): void {
-		const headerRemainLength =
-			this.headerMaxLength - combineCommitMessage(answers).length;
-		this.maxLength = Math.min(this.maxLength, headerRemainLength);
+		const headerRemainLength = this.headerMaxLength - combineCommitMessage(answers).length;
+		// Reserve 1 char for '!' when useExclamationMark is enabled.
+		const reservedLength = getPromptSettings()["useExclamationMark"] ? 1 : 0;
+		const remainingLength = Math.max(0, headerRemainLength - reservedLength);
+		this.maxLength = Math.min(this.maxLength, remainingLength);
 		this.minLength = Math.min(this.minLength, this.headerMinLength);
 	}
 }
 
 export function combineCommitMessage(answers: Answers): string {
-	const {type = '', scope = '', subject = ''} = answers;
-	const prefix = `${type}${scope ? `(${scope})` : ''}`;
+	const { type = "", scope = "", subject = "", isBreaking } = answers;
+	const hasPrefix = Boolean(type || scope);
+	const breakingMark =
+		hasPrefix && isBreaking && getPromptSettings()["useExclamationMark"] ? "!" : "";
+	const prefix = `${type}${scope ? `(${scope})` : ""}${breakingMark}`;
 
 	if (subject) {
-		return ((prefix ? prefix + ': ' : '') + subject).trim();
+		return ((prefix ? prefix + ": " : "") + subject).trim();
 	} else {
 		return prefix.trim();
 	}
@@ -41,8 +46,8 @@ export function getQuestions(): Array<DistinctQuestion> {
 	// header: type, scope, subject
 	const questions: Array<DistinctQuestion> = [];
 
-	const headerRuleFields: RuleField[] = ['type', 'scope', 'subject'];
-	const headerRuleQuestionConfig = getRuleQuestionConfig('header');
+	const headerRuleFields: RuleField[] = ["type", "scope", "subject"];
+	const headerRuleQuestionConfig = getRuleQuestionConfig("header");
 
 	if (!headerRuleQuestionConfig) {
 		return [];
@@ -55,7 +60,7 @@ export function getQuestions(): Array<DistinctQuestion> {
 				name,
 				questionConfig,
 				headerRuleQuestionConfig.maxLength,
-				headerRuleQuestionConfig.minLength
+				headerRuleQuestionConfig.minLength,
 			);
 			questions.push(instance.question);
 		}
@@ -63,16 +68,13 @@ export function getQuestions(): Array<DistinctQuestion> {
 	return questions;
 }
 
-export function getQuestionConfig(
-	name: RuleField
-): ReturnType<typeof getRuleQuestionConfig> {
+export function getQuestionConfig(name: RuleField): ReturnType<typeof getRuleQuestionConfig> {
 	const questionConfig = getRuleQuestionConfig(name);
 
 	if (questionConfig) {
-		if (name === 'scope') {
-			if (getPromptSettings()['enableMultipleScopes']) {
-				questionConfig.multipleSelectDefaultDelimiter =
-					getPromptSettings()['scopeEnumSeparator'];
+		if (name === "scope") {
+			if (getPromptSettings()["enableMultipleScopes"]) {
+				questionConfig.multipleSelectDefaultDelimiter = getPromptSettings()["scopeEnumSeparator"];
 			}
 			// split scope string to segments, match commitlint rules
 			questionConfig.multipleValueDelimiters = /\/|\\|,/g;

@@ -13,19 +13,21 @@
 - `.commitlintrc.mjs`
 - `.commitlintrc.ts`
 - `.commitlintrc.cts`
+- `.commitlintrc.mts`
 - `commitlint.config.js`
 - `commitlint.config.cjs`
 - `commitlint.config.mjs`
 - `commitlint.config.ts`
 - `commitlint.config.cts`
+- `commitlint.config.mts`
 
 The file is expected
 
-- to contain valid JavaScript / Typescript
+- to contain valid JavaScript / TypeScript
 - export a configuration object
 - adhere to the schema outlined below
 
-Configuration files are resolved using [cosmiconfig](https://github.com/cosmiconfig/cosmiconfig/tree/v8.2.0).
+Configuration files are resolved using [cosmiconfig](https://github.com/cosmiconfig/cosmiconfig).
 
 ## Config via `package.json`
 
@@ -43,22 +45,22 @@ const Configuration = {
    * Resolve and load @commitlint/config-conventional from node_modules.
    * Referenced packages must be installed
    */
-  extends: ['@commitlint/config-conventional'],
+  extends: ["@commitlint/config-conventional"],
   /*
    * Resolve and load conventional-changelog-atom from node_modules.
    * Referenced packages must be installed
    */
-  parserPreset: 'conventional-changelog-atom',
+  parserPreset: "conventional-changelog-atom",
   /*
    * Resolve and load @commitlint/format from node_modules.
    * Referenced package must be installed
    */
-  formatter: '@commitlint/format',
+  formatter: "@commitlint/format",
   /*
    * Any rules defined here will override rules from @commitlint/config-conventional
    */
   rules: {
-    'type-enum': [2, 'always', ['foo']],
+    "type-enum": [2, "always", ["foo"]],
   },
   /*
    * Array of functions that return true if commitlint should ignore the given message.
@@ -72,7 +74,7 @@ const Configuration = {
    * To see full list, check https://github.com/conventional-changelog/commitlint/blob/master/%40commitlint/is-ignored/src/defaults.ts.
    * To disable those ignores and run rules always, set `defaultIgnores: false` as shown below.
    */
-  ignores: [(commit) => commit === ''],
+  ignores: [(commit) => commit === ""],
   /*
    * Whether commitlint uses the default ignore rules, see the description above.
    */
@@ -80,8 +82,7 @@ const Configuration = {
   /*
    * Custom URL to show upon failure
    */
-  helpUrl:
-    'https://github.com/conventional-changelog/commitlint/#what-is-commitlint',
+  helpUrl: "https://github.com/conventional-changelog/commitlint/#what-is-commitlint",
   /*
    * Custom prompt configs
    */
@@ -89,7 +90,7 @@ const Configuration = {
     messages: {},
     questions: {
       type: {
-        description: 'please input type:',
+        description: "please input type:",
       },
     },
   },
@@ -105,25 +106,25 @@ export default Configuration;
 > module.exports = Configuration;
 > ```
 
-### Typescript configuration
+### TypeScript configuration
 
-Configuration can also be a typescript file.
+Configuration can also be a TypeScript file.
 
 Relevant types and enums can be imported from `@commitlint/types`.
 
 Below you can see main changes from a standard js file:
 
 ```ts
-import type {UserConfig} from '@commitlint/types'; // [!code focus]
-import {RuleConfigSeverity} from '@commitlint/types'; // [!code focus]
+import type { UserConfig } from "@commitlint/types"; // [!code focus]
+import { RuleConfigSeverity } from "@commitlint/types"; // [!code focus]
 
 const Configuration: UserConfig = {
   // [!code focus]
-  extends: ['@commitlint/config-conventional'],
-  parserPreset: 'conventional-changelog-atom',
-  formatter: '@commitlint/format',
+  extends: ["@commitlint/config-conventional"],
+  parserPreset: "conventional-changelog-atom",
+  formatter: "@commitlint/format",
   rules: {
-    'type-enum': [RuleConfigSeverity.Error, 'always', ['foo']], // [!code focus]
+    "type-enum": [RuleConfigSeverity.Error, "always", ["foo"]], // [!code focus]
   },
   // ...
 };
@@ -163,7 +164,7 @@ export default {
 
 ```js [commitlint.config.js]
 export default {
-  extends: ['./commitlint.base.js', './commitlint.types.js'],
+  extends: ["./commitlint.base.js", "./commitlint.types.js"],
 };
 ```
 
@@ -171,7 +172,7 @@ export default {
 // will be picked up by commitlint.config.js
 export default {
   rules: {
-    'type-enum': [2, 'always', ['foo']],
+    "type-enum": [2, "always", ["foo"]],
   },
 };
 ```
@@ -179,24 +180,25 @@ export default {
 ```js [commitlint.base.js]
 // will be picked up by commitlint.config.js
 export default {
-  extends: ['@commitlint/config-conventional'], // extends can be nested
-  parserPreset: 'conventional-changelog-atom',
+  extends: ["@commitlint/config-conventional"], // extends can be nested
+  parserPreset: "conventional-changelog-atom",
 };
 ```
 
 :::
 
-More information can be found in the [Concepts – sharable config section](/concepts/shareable-config).
+More information can be found in the [Concepts – shareable config section](/concepts/shareable-config).
 
 ## Parser presets
 
-The parser preset used to parse commit messages can be configured.
-Use ids resolvable by the node resolve algorithm.
+The parser preset controls how commit messages are parsed into their component parts (type, scope, subject, body, footer, etc.). By default, commitlint does not ship with a parser preset — it falls back to [`conventional-changelog-angular`](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-angular) defaults. When you extend `@commitlint/config-conventional`, the [`conventional-changelog-conventionalcommits`](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-conventionalcommits) preset is applied, which follows the [Conventional Commits specification](https://www.conventionalcommits.org/).
 
-This means installed npm packages and local files can be used.
+You can override the parser preset using the `parserPreset` property. It accepts:
 
-:::tabs
-== npm
+- A **string** referencing an npm package or local file (resolved via Node's module resolution)
+- An **object** with a `parserOpts` property for inline configuration
+
+### Using an npm package
 
 ```sh
 npm install --save-dev conventional-changelog-atom
@@ -206,17 +208,19 @@ npm install --save-dev conventional-changelog-atom
 
 ```js [commitlint.config.js]
 export default {
-  parserPreset: 'conventional-changelog-atom',
+  parserPreset: "conventional-changelog-atom",
 };
 ```
 
-== local
+:::
+
+### Using a local file
 
 ::: code-group
 
 ```js [commitlint.config.js]
 export default {
-  parserPreset: './parser-preset',
+  parserPreset: "./parser-preset",
 };
 ```
 
@@ -224,12 +228,129 @@ export default {
 export default {
   parserOpts: {
     headerPattern: /^(\w*)\((\w*)\)-(\w*)\s(.*)$/,
-    headerCorrespondence: ['type', 'scope', 'ticket', 'subject'],
+    headerCorrespondence: ["type", "scope", "ticket", "subject"],
   },
 };
 ```
 
 :::
+
+### Inline `parserOpts`
+
+You can also pass `parserOpts` directly without a separate file. This is useful for small adjustments like custom issue prefixes:
+
+::: code-group
+
+```js [commitlint.config.js]
+export default {
+  parserPreset: {
+    parserOpts: {
+      issuePrefixes: ["PROJ-", "JIRA-"],
+    },
+  },
+};
+```
+
+:::
+
+### Common `parserOpts`
+
+The parser is powered by [`conventional-commits-parser`](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-commits-parser). Common options include:
+
+| Option                  | Description                                                          |
+| ----------------------- | -------------------------------------------------------------------- |
+| `headerPattern`         | Regex to match the commit header (type, scope, subject)              |
+| `headerCorrespondence`  | Array of field names matching the capture groups in headerPattern    |
+| `issuePrefixes`         | Prefixes to match issue references (e.g. `["#", "PROJ-"]`)           |
+| `noteKeywords`          | Keywords that mark footer notes (e.g. `["BREAKING CHANGE"]`)         |
+| `breakingHeaderPattern` | Regex to detect breaking changes in the header (e.g. the `!` marker) |
+
+With the default parser, if a header with non-ASCII characters gets no type, commitlint tries again with a `headerPattern` or `breakingHeaderPattern` that starts with `^(\w*)` rewritten to read the type as letters, combining marks, numbers and `_` of any script (and the `u` flag added), so `功能: 新增登录` has the type `功能`. The result of the first try is kept when it already has a type, and patterns that use the `u` or `v` flag or start differently are used as written. A custom `parser` is called once with the patterns as given.
+
+For the complete list of options, see the [`conventional-commits-parser` documentation](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-commits-parser#options).
+
+### `presetConfig`
+
+When using a preset like `conventional-changelog-conventionalcommits`, you can pass a `presetConfig` object to customize the preset's behavior without replacing the entire parser configuration. This is commonly used to set commit types that appear in generated changelogs:
+
+::: code-group
+
+```js [commitlint.config.js]
+export default {
+  parserPreset: {
+    name: "conventional-changelog-conventionalcommits",
+    presetConfig: {
+      types: [
+        { type: "feat", section: "Features" },
+        { type: "fix", section: "Bug Fixes" },
+        { type: "docs", section: "Documentation", hidden: false },
+        { type: "chore", hidden: true },
+      ],
+    },
+  },
+};
+```
+
+:::
+
+The available `presetConfig` options depend on the preset you are using. See the [`conventional-changelog-conventionalcommits` documentation](https://github.com/conventional-changelog/conventional-changelog/tree/master/packages/conventional-changelog-conventionalcommits#preset-configuration) for details.
+
+### Usage with semantic-release
+
+If you use [semantic-release](https://github.com/semantic-release/semantic-release), both commitlint and semantic-release can share the same `conventional-changelog-conventionalcommits` preset. Keeping `parserOpts` and `presetConfig` consistent across both tools ensures that commits parsed during linting match what semantic-release uses for versioning and changelog generation:
+
+::: code-group
+
+```js [commitlint.config.js]
+export default {
+  extends: ["@commitlint/config-conventional"],
+  parserPreset: {
+    name: "conventional-changelog-conventionalcommits",
+    presetConfig: {
+      types: [
+        { type: "feat", section: "Features" },
+        { type: "fix", section: "Bug Fixes" },
+        { type: "docs", section: "Documentation", hidden: false },
+      ],
+    },
+  },
+};
+```
+
+:::
+
+```js [.releaserc.js]
+export default {
+  plugins: [
+    [
+      "@semantic-release/commit-analyzer",
+      {
+        preset: "conventionalcommits",
+        presetConfig: {
+          types: [
+            { type: "feat", section: "Features" },
+            { type: "fix", section: "Bug Fixes" },
+            { type: "docs", section: "Documentation", hidden: false },
+          ],
+        },
+      },
+    ],
+    [
+      "@semantic-release/release-notes-generator",
+      {
+        preset: "conventionalcommits",
+        presetConfig: {
+          types: [
+            { type: "feat", section: "Features" },
+            { type: "fix", section: "Bug Fixes" },
+            { type: "docs", section: "Documentation", hidden: false },
+          ],
+        },
+      },
+    ],
+  ],
+};
+```
 
 ## Formatter
 
@@ -238,8 +359,52 @@ Use ids resolvable by the node resolve algorithm.
 
 ```js
 export default {
-  formatter: '@commitlint/format',
+  formatter: "@commitlint/format",
 };
+```
+
+### Custom messages
+
+To tell developers how commits work in your project, point `helpUrl` at your own guide. For more, write a small formatter that wraps `@commitlint/format`. It can replace the message of a rule and add text below the problems:
+
+```js
+// commitlint-format.mjs
+import format from "@commitlint/format";
+
+const messages = {
+  "type-empty": 'start with a type, e.g. "feat: add login"',
+};
+
+export default function (report, options) {
+  for (const result of report.results) {
+    for (const problem of [...result.errors, ...result.warnings]) {
+      problem.message = messages[problem.name] ?? problem.message;
+    }
+  }
+  const output = format(report, options);
+  return report.valid ? output : `${output}\nRun "pnpm commit" to write a valid message.`;
+}
+```
+
+```js
+// commitlint.config.mjs
+export default {
+  extends: ["@commitlint/config-conventional"],
+  formatter: "./commitlint-format.mjs",
+  helpUrl: "https://github.com/your-org/your-repo/blob/main/CONTRIBUTING.md#commits",
+};
+```
+
+Install `@commitlint/format` next to `@commitlint/cli`, so the import also resolves with pnpm. For `add login` the output then reads:
+
+```text
+✖   subject may not be empty [subject-empty]
+✖   start with a type, e.g. "feat: add login" [type-empty]
+
+✖   found 2 problems, 0 warnings
+ⓘ   Get help: https://github.com/your-org/your-repo/blob/main/CONTRIBUTING.md#commits
+
+Run "pnpm commit" to write a valid message.
 ```
 
 ## Rules

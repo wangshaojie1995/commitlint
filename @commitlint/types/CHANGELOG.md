@@ -3,6 +3,171 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [21.2.3](https://github.com/conventional-changelog/commitlint/compare/v21.2.2...v21.2.3) (2026-09-19)
+
+### Bug Fixes
+
+* **types:** correct breaking-change-exclamation-mark rule config type ([#4954](https://github.com/conventional-changelog/commitlint/issues/4954)) ([66f0ffb](https://github.com/conventional-changelog/commitlint/commit/66f0ffb2d2f2b8e5964b3774f7b7f6d964253f9e))
+* update vitest monorepo to v5 ([#4992](https://github.com/conventional-changelog/commitlint/issues/4992)) ([91fb534](https://github.com/conventional-changelog/commitlint/commit/91fb534b8c9a1016ea4614f522a79a69977c52e4)), closes [vitest-dev/vitest#10222](https://github.com/vitest-dev/vitest/issues/10222) [vitest-dev/vitest#10460](https://github.com/vitest-dev/vitest/issues/10460) [vitest-dev/vitest#10449](https://github.com/vitest-dev/vitest/issues/10449)
+
+
+# [21.2.0](https://github.com/conventional-changelog/commitlint/compare/v21.1.0...v21.2.0) (2026-06-30)
+
+
+### Features
+
+* **resolve-extends:** resolve pure-ESM presets (conventional-changelog v7/v9/v10) ([#4859](https://github.com/conventional-changelog/commitlint/issues/4859)) ([fdb566f](https://github.com/conventional-changelog/commitlint/commit/fdb566fe59457a786eac80e2a8cbb994638daba0))
+
+
+
+
+
+# [21.1.0](https://github.com/conventional-changelog/commitlint/compare/v21.0.2...v21.1.0) (2026-06-23)
+
+
+### Features
+
+* **lint:** allow for custom commit parser function ([#4829](https://github.com/conventional-changelog/commitlint/issues/4829)) ([e820753](https://github.com/conventional-changelog/commitlint/commit/e8207534a9342264daecddec930ddf6cbacb83ca)), closes [#4816](https://github.com/conventional-changelog/commitlint/issues/4816) [#4816](https://github.com/conventional-changelog/commitlint/issues/4816)
+
+
+
+
+
+## [21.0.1](https://github.com/conventional-changelog/commitlint/compare/v21.0.0...v21.0.1) (2026-05-12)
+
+
+### Bug Fixes
+
+* **types:** add presetConfig to ParserPreset interface ([#4749](https://github.com/conventional-changelog/commitlint/issues/4749)) ([e402cd4](https://github.com/conventional-changelog/commitlint/commit/e402cd415ec820c683ea934c24386c5191966ac4)), closes [#4748](https://github.com/conventional-changelog/commitlint/issues/4748)
+
+
+
+
+
+# [21.0.0](https://github.com/conventional-changelog/commitlint/compare/v20.5.3...v21.0.0) (2026-05-08)
+
+
+* chore!: minimum node version v22 (#4679) ([ac2b3f4](https://github.com/conventional-changelog/commitlint/commit/ac2b3f4a947670e46af9a738881ba14158f0987a)), closes [#4679](https://github.com/conventional-changelog/commitlint/issues/4679)
+
+
+### BREAKING CHANGES
+
+* drop node v18 and v20 support
+
+- Bump engines to >=v22 in all 39 package.json files
+- Update @types/node to ^22.0.0
+- Update CI matrix to [22, 24]
+- Update Ubuntu baseline job to ubuntu:26.04
+- Update Dockerfile.ci, .mise.toml, .codesandbox/ci.json
+- Update pre-commit hook to use --ignore-engines
+- Update README and docs
+
+Co-authored-by: Claude Opus 4.6 (1M context) <noreply@anthropic.com>
+
+
+
+
+
+# [20.5.0](https://github.com/conventional-changelog/commitlint/compare/v20.4.4...v20.5.0) (2026-03-15)
+
+
+### Features
+
+* **cz-commitlint:** add exclamation mark support for breaking changes ([#4655](https://github.com/conventional-changelog/commitlint/issues/4655)) ([3b124a7](https://github.com/conventional-changelog/commitlint/commit/3b124a78000dc2ad353884b72db5ba0c78a642a3))
+
+
+
+
+
+## [20.4.4](https://github.com/conventional-changelog/commitlint/compare/v20.4.3...v20.4.4) (2026-03-12)
+
+
+### Bug Fixes
+
+* **types:** allow context parameter in QualifiedRuleConfig functions ([#4636](https://github.com/conventional-changelog/commitlint/issues/4636)) ([17537ae](https://github.com/conventional-changelog/commitlint/commit/17537ae05f3402f3b196d5a8cb92ae7207af8ba5)), closes [#4357](https://github.com/conventional-changelog/commitlint/issues/4357)
+
+
+
+
+
+## [20.4.3](https://github.com/conventional-changelog/commitlint/compare/v20.4.2...v20.4.3) (2026-03-03)
+
+
+### Bug Fixes
+
+* footer parser does not escape special chars for regex [#4560](https://github.com/conventional-changelog/commitlint/issues/4560) ([#4634](https://github.com/conventional-changelog/commitlint/issues/4634)) ([8ff7c7f](https://github.com/conventional-changelog/commitlint/commit/8ff7c7fcbc2db2b45910ecb5c01e9f1763060770))
+* **types:** incorrect types for rule options ([#4633](https://github.com/conventional-changelog/commitlint/issues/4633)) ([77b85f2](https://github.com/conventional-changelog/commitlint/commit/77b85f24d3858161d076078d333c96909e6136f8))
+
+
+
+
+
+# [20.4.0](https://github.com/conventional-changelog/commitlint/compare/v20.3.1...v20.4.0) (2026-01-30)
+
+
+### Features
+
+* upgrade conventional commit packages [#4082](https://github.com/conventional-changelog/commitlint/issues/4082) ([#4597](https://github.com/conventional-changelog/commitlint/issues/4597)) ([3aaf0a6](https://github.com/conventional-changelog/commitlint/commit/3aaf0a603c4047d268d85207957c919f45b60e1f))
+
+
+
+
+
+## [20.3.1](https://github.com/conventional-changelog/commitlint/compare/v20.3.0...v20.3.1) (2026-01-08)
+
+
+### Bug Fixes
+
+* **types:** add scope-delimiter-style types ([#4592](https://github.com/conventional-changelog/commitlint/issues/4592)) ([23c1f6e](https://github.com/conventional-changelog/commitlint/commit/23c1f6ef3ddfcc5316f429d51854929c39ea1103))
+
+
+
+
+
+# [20.2.0](https://github.com/conventional-changelog/commitlint/compare/v20.1.0...v20.2.0) (2025-12-05)
+
+
+### Features
+
+* **cz-commitlint:** support customizable commit prompt with emojis ([#4540](https://github.com/conventional-changelog/commitlint/issues/4540)) ([803c05b](https://github.com/conventional-changelog/commitlint/commit/803c05b6d722676ed499585ed713d185d1670462))
+* **rules:** add breaking-change-exclamation-mark ([#4548](https://github.com/conventional-changelog/commitlint/issues/4548)) ([c4d419b](https://github.com/conventional-changelog/commitlint/commit/c4d419bc76aab72092f1ebd7c0922729a576b7a5)), closes [#4547](https://github.com/conventional-changelog/commitlint/issues/4547)
+
+
+
+
+
+# [20.0.0](https://github.com/conventional-changelog/commitlint/compare/v19.9.1...v20.0.0) (2025-09-25)
+
+**Note:** Version bump only for package @commitlint/types
+
+
+
+
+
+## [19.8.1](https://github.com/conventional-changelog/commitlint/compare/v19.8.0...v19.8.1) (2025-05-08)
+
+**Note:** Version bump only for package @commitlint/types
+
+
+
+
+
+# [19.8.0](https://github.com/conventional-changelog/commitlint/compare/v19.7.1...v19.8.0) (2025-03-07)
+
+**Note:** Version bump only for package @commitlint/types
+
+
+
+
+
+# [19.5.0](https://github.com/conventional-changelog/commitlint/compare/v19.4.1...v19.5.0) (2024-09-11)
+
+**Note:** Version bump only for package @commitlint/types
+
+
+
+
+
 ## [19.0.3](https://github.com/conventional-changelog/commitlint/compare/v19.0.2...v19.0.3) (2024-02-28)
 
 

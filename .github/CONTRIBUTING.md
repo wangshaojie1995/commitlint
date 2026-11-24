@@ -30,13 +30,17 @@ Please consider these guidelines when filing a pull request:
 - Follow the [Coding Rules](#coding-rules)
 - Follow the [Commit Rules](#commit-rules)
 - Make sure you rebased the current master branch when filing the pull request
-- Squash your commits when filing the pull request
+- Keep a clear commit history: squash incidental/WIP commits, but for features and bug fixes follow [Test-driven development](#test-driven-development) — a failing-test commit, then the implementation
 - Provide a short title with a maximum of 100 characters
 - Provide a more detailed description containing
   _ What you want to achieve
   _ What you changed
   _ What you added
   _ What you removed
+
+### Working with maintainers
+
+A pull request is driven by its author. When you receive review feedback — whether from a maintainer or an automated reviewer — please either address it or reply explaining why you'd skip it, so the PR can keep moving. If anything is unclear, just ask; we're happy to help.
 
 ### Coding Rules
 
@@ -63,12 +67,28 @@ To make your life easier commitlint is commitizen-friendly and provides the npm 
 
 ### Environment setup
 
-This project uses `yarn`, so be sure that it is available in your shell environment.
+> [!IMPORTANT]
+> **Upgrading from a pre-pnpm clone?**
+> This repo switched from yarn to pnpm. If your local checkout predates that,
+> run a one-time cleanup before `pnpm install`:
+>
+> ```sh
+> rm -rf node_modules @commitlint/*/node_modules @packages/*/node_modules @alias/*/node_modules
+> # If you have an open PR with yarn.lock changes, rebase onto master
+> # and regenerate pnpm-lock.yaml with `pnpm install`.
+> ```
+
+This project uses `pnpm`, so be sure that it is available in your shell environment.
+The required version is pinned in `package.json` (`packageManager` field); the
+easiest ways to install it are:
+
+- [mise](https://mise.jdx.dev/): `mise install` (uses `.mise.toml`)
+- [direct install](https://pnpm.io/installation)
 
 After cloning the repo run
 
 ```sh
-yarn install
+pnpm install
 ```
 
 ### Testing
@@ -76,8 +96,27 @@ yarn install
 From the project root directory, use the following commands to run the test suite
 
 ```sh
-yarn build
-yarn test
+pnpm build
+pnpm test
+```
+
+### Test-driven development
+
+For features and bug fixes we follow [test-driven development](https://martinfowler.com/bliki/TestDrivenDevelopment.html) ("red, green, refactor"): write a test that fails because the behavior doesn't exist yet, then write the code that makes it pass.
+
+Please mirror this in your pull request with two commits:
+
+1. **Tests first** — add tests for the new behavior. On their own they must fail (CI red), which proves they actually exercise the change.
+2. **Implementation** — add the code that makes them pass (CI green).
+
+Make sure the test commit fails for the _right reason_ — a failing assertion, not a build error — and that each test would pass only _with_ your change. A test that passes without the implementation isn't testing it.
+
+```sh
+# commit 1 — failing tests (CI red)
+git commit -m "test: cover <behavior>"
+
+# commit 2 — implementation (CI green)
+git commit -m "feat(<scope>): <behavior>"
 ```
 
 ### Documentation updates
@@ -86,14 +125,14 @@ Documentation uses `vitepress`.
 To run and edit the documentation locally run:
 
 ```sh
-yarn docs-dev
+pnpm docs-dev
 ```
 
 To have a preview of the deployed doc run:
 
 ```sh
-yarn docs-build
-yarn docs-serve
+pnpm docs-build
+pnpm docs-preview
 ```
 
 For more information refer to [vitepress documentation](https://vitepress.dev).
@@ -108,18 +147,17 @@ For more information refer to [vitepress documentation](https://vitepress.dev).
 
 ```sh
 npm login
-nvm use (if you have nvm installed)
+mise install
 ```
 
-- [nvm](https://github.com/nvm-sh/nvm)
-- [asdf](https://asdf-vm.com/) is supported as well
+- [mise](https://mise.jdx.dev/)
 
 ```sh
-yarn clean
-yarn install
-yarn build
-yarn test
-yarn run publish --otp <one-time password>
+pnpm clean
+pnpm install
+pnpm build
+pnpm test
+pnpm run publish --otp <one-time password>
 ```
 
 If something in between fails (like a new package was added and needs to be published for the
@@ -136,22 +174,24 @@ has not been published yet.
 
 ```sh
 npm login
-nvm use (if you have nvm installed)
+mise install
 ```
 
 ```sh
-yarn clean
-yarn install
-yarn build
-yarn test
-npx lerna publish --conventional-commits --dist-tag [`next` | `[release-vXX(BRANCH)]`] --otp <one-time password>
+pnpm clean
+pnpm install
+pnpm build
+pnpm test
+pnpm lerna publish --conventional-commits --dist-tag [`next` | `next` | `[release-vXX(BRANCH)]`] --otp <one-time password>
 ```
 
 If for some reason this stops in between, you can manually publish missing packages like this:
 
 ```sh
-npm publish <package-name> --tag [`next` | `[release-vXX(BRANCH)]`] --otp <one-time password>
+npm publish <package-name> --tag [`latest` | `next` | `[release-vXX(BRANCH)]`] --otp <one-time password>
 ```
+
+Depending on the state of the packages you might need to run `npm pack` in each failed package and then publish it.
 
 #### Publishing (new) packages for the first time
 

@@ -1,29 +1,49 @@
-import * as ensure from '@commitlint/ensure';
-import message from '@commitlint/message';
-import {SyncRule} from '@commitlint/types';
+import * as ensure from "@commitlint/ensure";
+import message from "@commitlint/message";
+import { SyncRule } from "@commitlint/types";
 
-export const scopeEnum: SyncRule<string[]> = (
-	{scope},
-	when = 'always',
-	value = []
-) => {
-	if (!scope || !value.length) {
-		return [true, ''];
+export const scopeEnum: SyncRule<
+	| string[]
+	| {
+			scopes: string[];
+			delimiters?: string[];
+			scopesByType?: Record<string, string[]>;
+	  }
+> = ({ scope, type }, when = "always", value = []) => {
+	const isObjectBasedConfiguration = !Array.isArray(value);
+	// A list given for the commit type replaces the general one for that type.
+	const typeScopes =
+		isObjectBasedConfiguration &&
+		type &&
+		value.scopesByType &&
+		Object.hasOwn(value.scopesByType, type)
+			? value.scopesByType[type]
+			: undefined;
+	const scopes = typeScopes ?? (isObjectBasedConfiguration ? value.scopes : value);
+
+	if (!scope || !scopes.length) {
+		return [true, ""];
 	}
 
-	// Scopes may contain slash or comma delimiters to separate them and mark them as individual segments.
-	// This means that each of these segments should be tested separately with `ensure`.
-	const delimiters = /\/|\\|, ?/g;
-	const messageScopes = scope.split(delimiters);
-	const errorMessage = ['scope must', `be one of [${value.join(', ')}]`];
-	const isScopeInEnum = (scope: string) => ensure.enum(scope, value);
+	const delimiters =
+		isObjectBasedConfiguration && value.delimiters?.length ? value.delimiters : ["/", "\\", ","];
+	const delimiterPatterns = delimiters.map((delimiter) => {
+		return delimiter === "," ? ", ?" : delimiter.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+	});
+	const messageScopes = scope.split(new RegExp(delimiterPatterns.join("|")));
+	const errorMessage = [
+		"scope must",
+		`be one of [${scopes.join(", ")}]`,
+		typeScopes ? `for type ${type}` : undefined,
+	];
+	const isScopeInEnum = (scope: string) => ensure.enum(scope, scopes);
 	let isValid;
 
-	if (when === 'never') {
-		isValid = !messageScopes.some(isScopeInEnum);
-		errorMessage.splice(1, 0, 'not');
+	if (when === "never") {
+		isValid = !messageScopes.some(isScopeInEnum) && !isScopeInEnum(scope);
+		errorMessage.splice(1, 0, "not");
 	} else {
-		isValid = messageScopes.every(isScopeInEnum);
+		isValid = messageScopes.every(isScopeInEnum) || isScopeInEnum(scope);
 	}
 
 	return [isValid, message(errorMessage)];

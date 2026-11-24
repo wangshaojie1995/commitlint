@@ -107,11 +107,13 @@ These can be modified by [your own configuration](#config).
   - `.commitlintrc.mjs`
   - `.commitlintrc.ts`
   - `.commitlintrc.cts`
+  - `.commitlintrc.mts`
   - `commitlint.config.js`
   - `commitlint.config.cjs`
   - `commitlint.config.mjs`
   - `commitlint.config.ts`
   - `commitlint.config.cts`
+  - `commitlint.config.mts`
   - `commitlint` field in `package.json`
   - `commitlint` field in [`package.yaml`](https://github.com/pnpm/pnpm/pull/1799)
 - Packages: [cli](./@commitlint/cli), [core](./@commitlint/core)
@@ -127,9 +129,9 @@ A number of shared configurations are available to install and use with `commitl
 - [@commitlint/config-lerna-scopes](./@commitlint/config-lerna-scopes)
 - [@commitlint/config-nx-scopes](./@commitlint/config-nx-scopes)
 - [@commitlint/config-patternplate](./@commitlint/config-patternplate)
+- [@commitlint/config-workspace-scopes](./@commitlint/config-workspace-scopes)
 - [conventional-changelog-lint-config-atom](https://github.com/erikmueller/conventional-changelog-lint-config-atom)
 - [conventional-changelog-lint-config-canonical](https://github.com/gajus/conventional-changelog-lint-config-canonical)
-- [commitlint-config-jira](https://github.com/Gherciu/commitlint-jira)
 
 > ⚠️ If you want to publish your own shareable config then make sure it has a name aligning with the pattern `commitlint-config-emoji-log` or `commitlint-config-your-config-name` — then in extend all you have to write is `emoji-log` or `your-config-name`.
 
@@ -160,26 +162,10 @@ Check the [main website](https://commitlint.js.org/).
 
 ## Version Support and Releases
 
-- Node.js [LTS](https://github.com/nodejs/LTS#lts-schedule) `>= 18`
+- Node.js [LTS](https://github.com/nodejs/LTS#lts-schedule) `>= 22.12.0`
 - git `>= 2.13.2`
 
 ### Releases
-
-Security patches will be applied to versions which are not yet EOL.\
-Features will only be applied to the current main version.
-
-| Release                                                                          | Initial release |
-| -------------------------------------------------------------------------------- | --------------- |
-| [v18](https://github.com/conventional-changelog/commitlint/releases/tag/v18.0.0) | 10/2023         |
-| [v17](https://github.com/conventional-changelog/commitlint/releases/tag/v17.0.0) | 05/2022         |
-| [v16](https://github.com/conventional-changelog/commitlint/releases/tag/v16.0.0) | 12/2021         |
-| [v15](https://github.com/conventional-changelog/commitlint/releases/tag/v15.0.0) | 11/2021         |
-| [v14](https://github.com/conventional-changelog/commitlint/releases/tag/v14.0.0) | 10/2021         |
-| [v13](https://github.com/conventional-changelog/commitlint/releases/tag/v13.0.0) | 05/2021         |
-| [v12](https://github.com/conventional-changelog/commitlint/releases/tag/v12.0.0) | 02/2021         |
-| [v11](https://github.com/conventional-changelog/commitlint/releases/tag/v11.0.0) | 09/2020         |
-
-EOL is usually after around a year.
 
 We're not a sponsored OSS project. Therefore we can't promise that we will release patch versions for older releases in a timely manner.\
 If you are stuck on an older version and need a security patch we're happy if you can provide a PR.
@@ -206,10 +192,10 @@ Copyright by @marionebl. All `commitlint` packages are released under the MIT li
 ```sh
 git clone git@github.com:conventional-changelog/commitlint.git
 cd commitlint
-yarn
-yarn run build # run build tasks
-yarn start # run tests, again on change
-yarn run commitlint # run CLI
+pnpm install
+pnpm build # run build tasks
+pnpm start # rebuild on change (tsc -b --watch)
+node @commitlint/cli/cli.js # run CLI
 ```
 
 For more information on how to contribute please take a look at our [contribution guide](./.github/CONTRIBUTING.md).

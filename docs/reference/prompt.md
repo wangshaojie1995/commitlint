@@ -10,6 +10,7 @@ Set optional options.
 
 - `enableMultipleScopes`: `(boolean)` Enable multiple scopes, select scope with a radio list, disabled by default.
 - `scopeEnumSeparator`: `(string)` Commitlint supports [multiple scopes](/concepts/commit-conventions#multiple-scopes), you can specify the delimiter. It is applied when `enableMultipleScopes` set true.
+- `useExclamationMark`: `(boolean)` Append `!` after the type/scope in the commit header when a breaking change is indicated, disabled by default.
 
 ## `messages`
 
@@ -38,6 +39,13 @@ Specify the interactive steps, Steps can only be configured in
 - `isIssueAffected`
 - `issues`
 - `issuesBody`
+
+The issue steps follow the [`references-empty`](/reference/rules#references-empty) rule:
+
+- `never`: only `issues` is asked, and it cannot be skipped. `isIssueAffected` and `issuesBody` are left out. The answer needs a reference the parser recognizes, so it has to carry a configured issue prefix: `fix #123` passes, `fix 123` still fails the rule.
+- `always`: none of the issue steps are asked.
+
+`breakingBody` and `issuesBody` are also left out when [`body-empty`](/reference/rules#body-empty) is `always`.
 
 ![cz-commitlint questions](/assets/cz-commitlint.png)
 

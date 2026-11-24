@@ -1,12 +1,24 @@
-import {defineConfig} from 'vitest/config';
+import { defineConfig } from "vitest/config";
 
 export default defineConfig({
 	test: {
-		exclude: ['**/node_modules/**', '**/lib/*.test.js'],
-		environment: 'commitlint',
-		coverage: {
-			provider: 'istanbul',
-			include: ['**/@commitlint/*/src/**'],
+		testTimeout: 15_000,
+		typecheck: {
+			enabled: true,
 		},
+		env: {
+			HOME: process.cwd(),
+			LANG: "en_US.UTF-8",
+			NO_COLOR: "1",
+		},
+		exclude: ["**/node_modules/**", "**/lib/*.test.js"],
+		environment: "commitlint",
+		coverage: {
+			provider: "istanbul",
+			include: ["**/@commitlint/*/src/**/*.{ts,js,mjs,cjs}"],
+		},
+	},
+	environments: {
+		node: {},
 	},
 });

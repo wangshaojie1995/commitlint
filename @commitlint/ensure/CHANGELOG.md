@@ -3,6 +3,182 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [21.2.4](https://github.com/conventional-changelog/commitlint/compare/v21.2.3...v21.2.4) (2026-10-18)
+
+**Note:** Version bump only for package @commitlint/ensure
+
+
+
+
+
+## [21.2.3](https://github.com/conventional-changelog/commitlint/compare/v21.2.2...v21.2.3) (2026-09-19)
+
+**Note:** Version bump only for package @commitlint/ensure
+
+
+
+
+
+# [21.2.0](https://github.com/conventional-changelog/commitlint/compare/v21.1.0...v21.2.0) (2026-06-30)
+
+**Note:** Version bump only for package @commitlint/ensure
+
+
+
+
+
+# [21.1.0](https://github.com/conventional-changelog/commitlint/compare/v21.0.2...v21.1.0) (2026-06-23)
+
+**Note:** Version bump only for package @commitlint/ensure
+
+
+
+
+
+## [21.0.1](https://github.com/conventional-changelog/commitlint/compare/v21.0.0...v21.0.1) (2026-05-12)
+
+**Note:** Version bump only for package @commitlint/ensure
+
+
+
+
+
+# [21.0.0](https://github.com/conventional-changelog/commitlint/compare/v20.5.3...v21.0.0) (2026-05-08)
+
+
+* chore!: minimum node version v22 (#4679) ([ac2b3f4](https://github.com/conventional-changelog/commitlint/commit/ac2b3f4a947670e46af9a738881ba14158f0987a)), closes [#4679](https://github.com/conventional-changelog/commitlint/issues/4679)
+
+
+### BREAKING CHANGES
+
+* drop node v18 and v20 support
+
+- Bump engines to >=v22 in all 39 package.json files
+- Update @types/node to ^22.0.0
+- Update CI matrix to [22, 24]
+- Update Ubuntu baseline job to ubuntu:26.04
+- Update Dockerfile.ci, .mise.toml, .codesandbox/ci.json
+- Update pre-commit hook to use --ignore-engines
+- Update README and docs
+
+Co-authored-by: Claude Opus 4.6 (1M context) <noreply@anthropic.com>
+
+
+
+
+
+## [20.5.3](https://github.com/conventional-changelog/commitlint/compare/v20.5.2...v20.5.3) (2026-04-30)
+
+**Note:** Version bump only for package @commitlint/ensure
+
+
+
+
+
+# [20.5.0](https://github.com/conventional-changelog/commitlint/compare/v20.4.4...v20.5.0) (2026-03-15)
+
+**Note:** Version bump only for package @commitlint/ensure
+
+
+
+
+
+## [20.4.4](https://github.com/conventional-changelog/commitlint/compare/v20.4.3...v20.4.4) (2026-03-12)
+
+**Note:** Version bump only for package @commitlint/ensure
+
+
+
+
+
+## [20.4.3](https://github.com/conventional-changelog/commitlint/compare/v20.4.2...v20.4.3) (2026-03-03)
+
+**Note:** Version bump only for package @commitlint/ensure
+
+
+
+
+
+## [20.4.1](https://github.com/conventional-changelog/commitlint/compare/v20.4.0...v20.4.1) (2026-02-02)
+
+
+### Reverts
+
+* replace all lodash string methods with kasi [#4602](https://github.com/conventional-changelog/commitlint/issues/4602) ([#4621](https://github.com/conventional-changelog/commitlint/issues/4621)) ([5326ab9](https://github.com/conventional-changelog/commitlint/commit/5326ab98a7c68f2f67c46c253f10c087d4570ddd)), closes [#4620](https://github.com/conventional-changelog/commitlint/issues/4620) [#4620](https://github.com/conventional-changelog/commitlint/issues/4620)
+
+
+
+
+
+# [20.4.0](https://github.com/conventional-changelog/commitlint/compare/v20.3.1...v20.4.0) (2026-01-30)
+
+**Note:** Version bump only for package @commitlint/ensure
+
+
+
+
+
+## [20.3.1](https://github.com/conventional-changelog/commitlint/compare/v20.3.0...v20.3.1) (2026-01-08)
+
+**Note:** Version bump only for package @commitlint/ensure
+
+
+
+
+
+# [20.2.0](https://github.com/conventional-changelog/commitlint/compare/v20.1.0...v20.2.0) (2025-12-05)
+
+
+### Bug Fixes
+
+* update dependency glob to v11 [security] ([#4561](https://github.com/conventional-changelog/commitlint/issues/4561)) ([a89a08b](https://github.com/conventional-changelog/commitlint/commit/a89a08b2fd3c72a6cd09e00508fc2e972f27c64c))
+
+
+
+
+
+# [20.0.0](https://github.com/conventional-changelog/commitlint/compare/v19.9.1...v20.0.0) (2025-09-25)
+
+
+* feat(rules)!: make body-max-line-length ignore lines with URLs (#4486) ([2f37a88](https://github.com/conventional-changelog/commitlint/commit/2f37a886be4b07bcd8e1126cc6a13256e7b6cc37)), closes [#4486](https://github.com/conventional-changelog/commitlint/issues/4486)
+
+
+### BREAKING CHANGES
+
+* when lines contain URLs exceeding the maximum
+line length `body-max-line-length` will be ignored
+
+
+
+
+
+## [19.8.1](https://github.com/conventional-changelog/commitlint/compare/v19.8.0...v19.8.1) (2025-05-08)
+
+**Note:** Version bump only for package @commitlint/ensure
+
+
+
+
+
+# [19.8.0](https://github.com/conventional-changelog/commitlint/compare/v19.7.1...v19.8.0) (2025-03-07)
+
+
+### Performance Improvements
+
+* use `node:` prefix to bypass require.cache call for builtins ([#4302](https://github.com/conventional-changelog/commitlint/issues/4302)) ([0cd8f41](https://github.com/conventional-changelog/commitlint/commit/0cd8f410573fe11383f788b1ceb7e0946143591d))
+
+
+
+
+
+# [19.5.0](https://github.com/conventional-changelog/commitlint/compare/v19.4.1...v19.5.0) (2024-09-11)
+
+**Note:** Version bump only for package @commitlint/ensure
+
+
+
+
+
 ## [19.0.3](https://github.com/conventional-changelog/commitlint/compare/v19.0.2...v19.0.3) (2024-02-28)
 
 **Note:** Version bump only for package @commitlint/ensure

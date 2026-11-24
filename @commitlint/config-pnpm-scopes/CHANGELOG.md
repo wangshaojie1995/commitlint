@@ -3,6 +3,158 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [21.2.2](https://github.com/conventional-changelog/commitlint/compare/v21.2.1...v21.2.2) (2026-08-13)
+
+**Note:** Version bump only for package @commitlint/config-pnpm-scopes
+
+
+
+
+
+# [21.2.0](https://github.com/conventional-changelog/commitlint/compare/v21.1.0...v21.2.0) (2026-06-30)
+
+**Note:** Version bump only for package @commitlint/config-pnpm-scopes
+
+
+
+
+
+## [21.0.2](https://github.com/conventional-changelog/commitlint/compare/v21.0.1...v21.0.2) (2026-05-29)
+
+
+### Bug Fixes
+
+* **config-pnpm-scopes:** adapt to read-yaml-file v3 named export ([#4701](https://github.com/conventional-changelog/commitlint/issues/4701)) ([8b55772](https://github.com/conventional-changelog/commitlint/commit/8b557726a4c59020be30bee44d1f5de6ead25c7b))
+* update dependency @pnpm/read-project-manifest to v6 ([#4617](https://github.com/conventional-changelog/commitlint/issues/4617)) ([ca16ec1](https://github.com/conventional-changelog/commitlint/commit/ca16ec111d9c7c680f672534cf7bb70f0f563a76))
+
+
+
+
+
+## [21.0.1](https://github.com/conventional-changelog/commitlint/compare/v21.0.0...v21.0.1) (2026-05-12)
+
+**Note:** Version bump only for package @commitlint/config-pnpm-scopes
+
+
+
+
+
+# [21.0.0](https://github.com/conventional-changelog/commitlint/compare/v20.5.3...v21.0.0) (2026-05-08)
+
+
+* chore!: minimum node version v22 (#4679) ([ac2b3f4](https://github.com/conventional-changelog/commitlint/commit/ac2b3f4a947670e46af9a738881ba14158f0987a)), closes [#4679](https://github.com/conventional-changelog/commitlint/issues/4679)
+
+
+### BREAKING CHANGES
+
+* drop node v18 and v20 support
+
+- Bump engines to >=v22 in all 39 package.json files
+- Update @types/node to ^22.0.0
+- Update CI matrix to [22, 24]
+- Update Ubuntu baseline job to ubuntu:26.04
+- Update Dockerfile.ci, .mise.toml, .codesandbox/ci.json
+- Update pre-commit hook to use --ignore-engines
+- Update README and docs
+
+Co-authored-by: Claude Opus 4.6 (1M context) <noreply@anthropic.com>
+
+
+
+
+
+## [20.5.2](https://github.com/conventional-changelog/commitlint/compare/v20.5.1...v20.5.2) (2026-04-25)
+
+**Note:** Version bump only for package @commitlint/config-pnpm-scopes
+
+
+
+
+
+## [20.4.3](https://github.com/conventional-changelog/commitlint/compare/v20.4.2...v20.4.3) (2026-03-03)
+
+**Note:** Version bump only for package @commitlint/config-pnpm-scopes
+
+
+
+
+
+# [20.4.0](https://github.com/conventional-changelog/commitlint/compare/v20.3.1...v20.4.0) (2026-01-30)
+
+**Note:** Version bump only for package @commitlint/config-pnpm-scopes
+
+
+
+
+
+# [20.1.0](https://github.com/conventional-changelog/commitlint/compare/v20.0.0...v20.1.0) (2025-09-30)
+
+
+### Features
+
+* **config-pnpm-scopes:** allow global scope ([#4553](https://github.com/conventional-changelog/commitlint/issues/4553)) ([e571970](https://github.com/conventional-changelog/commitlint/commit/e57197061447eb9ea74b8d81ab003ad3b4652be6))
+
+
+
+
+
+# [20.0.0](https://github.com/conventional-changelog/commitlint/compare/v19.9.1...v20.0.0) (2025-09-25)
+
+**Note:** Version bump only for package @commitlint/config-pnpm-scopes
+
+
+
+
+
+## [19.9.1](https://github.com/conventional-changelog/commitlint/compare/v19.9.0...v19.9.1) (2025-08-29)
+
+
+### Bug Fixes
+
+* add TypeScript support and configuration for pnpm scopes ([#4544](https://github.com/conventional-changelog/commitlint/issues/4544)) ([ea75778](https://github.com/conventional-changelog/commitlint/commit/ea75778e8d32c932d85062902456cd821e471fdd))
+
+
+
+
+
+# [19.9.0](https://github.com/conventional-changelog/commitlint/compare/v19.8.1...v19.9.0) (2025-08-26)
+
+
+### Features
+
+* **config-pnpm-scopes:** migrate package to TypeScript ([#4541](https://github.com/conventional-changelog/commitlint/issues/4541)) ([6ae36ea](https://github.com/conventional-changelog/commitlint/commit/6ae36ea5a55d7736024461ec6af94a14b821acc4))
+
+
+
+
+
+## [19.8.1](https://github.com/conventional-changelog/commitlint/compare/v19.8.0...v19.8.1) (2025-05-08)
+
+**Note:** Version bump only for package @commitlint/config-pnpm-scopes
+
+
+
+
+
+# [19.8.0](https://github.com/conventional-changelog/commitlint/compare/v19.7.1...v19.8.0) (2025-03-07)
+
+
+### Performance Improvements
+
+* use `node:` prefix to bypass require.cache call for builtins ([#4302](https://github.com/conventional-changelog/commitlint/issues/4302)) ([0cd8f41](https://github.com/conventional-changelog/commitlint/commit/0cd8f410573fe11383f788b1ceb7e0946143591d))
+
+
+
+
+
+# [19.5.0](https://github.com/conventional-changelog/commitlint/compare/v19.4.1...v19.5.0) (2024-09-11)
+
+**Note:** Version bump only for package @commitlint/config-pnpm-scopes
+
+
+
+
+
 # [19.1.0](https://github.com/conventional-changelog/commitlint/compare/v19.0.3...v19.1.0) (2024-03-12)
 
 

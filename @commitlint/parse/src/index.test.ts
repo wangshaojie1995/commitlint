@@ -1,23 +1,33 @@
-import {test, expect} from 'vitest';
-import parse from './index.js';
+import { test, expect } from "vitest";
+import type { ParserOptions } from "conventional-commits-parser";
 
-test('throws when called without params', async () => {
-	await expect((parse as any)()).rejects.toThrow('Expected a raw commit');
+import parse from "./index.js";
+
+// conventional-changelog-angular@>=9 exposes a single default `createPreset()`
+// whose return is typed as `{}`; the parser options live under `.parser`.
+const angularParserOpts = async (): Promise<ParserOptions> => {
+	const { default: createPreset } = await import("conventional-changelog-angular");
+	const { parser } = (await createPreset()) as { parser: ParserOptions };
+	return parser;
+};
+
+test("throws when called without params", async () => {
+	await expect((parse as any)()).rejects.toThrow("Expected a raw commit");
 });
 
-test('throws when called with empty message', async () => {
-	await expect(parse('')).rejects.toThrow('Expected a raw commit');
+test("throws when called with empty message", async () => {
+	await expect(parse("")).rejects.toThrow("Expected a raw commit");
 });
 
-test('returns object with raw message', async () => {
-	const message = 'type(scope): subject';
+test("returns object with raw message", async () => {
+	const message = "type(scope): subject";
 	const actual = await parse(message);
 
-	expect(actual).toHaveProperty('raw', message);
+	expect(actual).toHaveProperty("raw", message);
 });
 
-test('calls parser with message and passed options', async () => {
-	const message = 'message';
+test("calls parser with message and passed options", async () => {
+	const message = "message";
 
 	expect.assertions(1);
 	await parse(message, (m: string): any => {
@@ -26,25 +36,25 @@ test('calls parser with message and passed options', async () => {
 	});
 });
 
-test('passes object up from parser function', async () => {
-	const message = 'message';
+test("passes object up from parser function", async () => {
+	const message = "message";
 	const result: any = {};
 	const actual = await parse(message, () => result);
 
 	expect(actual).toBe(result);
 });
 
-test('returns object with expected keys', async () => {
-	const message = 'message';
+test("returns object with expected keys", async () => {
+	const message = "message";
 	const actual = await parse(message);
 	const expected = {
 		body: null,
 		footer: null,
-		header: 'message',
+		header: "message",
 		mentions: [],
 		merge: null,
 		notes: [],
-		raw: 'message',
+		raw: "message",
 		references: [],
 		revert: null,
 		scope: null,
@@ -55,29 +65,29 @@ test('returns object with expected keys', async () => {
 	expect(actual).toMatchObject(expected);
 });
 
-test('uses angular grammar', async () => {
-	const message = 'type(scope): subject';
+test("uses angular grammar", async () => {
+	const message = "type(scope): subject";
 	const actual = await parse(message);
 	const expected = {
 		body: null,
 		footer: null,
-		header: 'type(scope): subject',
+		header: "type(scope): subject",
 		mentions: [],
 		merge: null,
 		notes: [],
-		raw: 'type(scope): subject',
+		raw: "type(scope): subject",
 		references: [],
 		revert: null,
-		scope: 'scope',
-		subject: 'subject',
-		type: 'type',
+		scope: "scope",
+		subject: "subject",
+		type: "type",
 	};
 
 	expect(actual).toMatchObject(expected);
 });
 
-test('uses custom opts parser', async () => {
-	const message = 'type(scope)-subject';
+test("uses custom opts parser", async () => {
+	const message = "type(scope)-subject";
 	const changelogOpts = {
 		parserOpts: {
 			headerPattern: /^(\w*)(?:\((.*)\))?-(.*)$/,
@@ -87,112 +97,135 @@ test('uses custom opts parser', async () => {
 	const expected = {
 		body: null,
 		footer: null,
-		header: 'type(scope)-subject',
+		header: "type(scope)-subject",
 		mentions: [],
 		merge: null,
 		notes: [],
-		raw: 'type(scope)-subject',
+		raw: "type(scope)-subject",
 		references: [],
 		revert: null,
-		scope: 'scope',
-		subject: 'subject',
-		type: 'type',
+		scope: "scope",
+		subject: "subject",
+		type: "type",
 	};
 
 	expect(actual).toMatchObject(expected);
 });
 
-test('does not merge array properties with custom opts', async () => {
-	const message = 'type: subject';
+test("does not merge array properties with custom opts", async () => {
+	const message = "type: subject";
 	const actual = await parse(message, undefined, {
 		headerPattern: /^(.*):\s(.*)$/,
-		headerCorrespondence: ['type', 'subject'],
+		headerCorrespondence: ["type", "subject"],
 	});
 	const expected = {
 		body: null,
 		footer: null,
-		header: 'type: subject',
+		header: "type: subject",
 		mentions: [],
 		merge: null,
 		notes: [],
-		raw: 'type: subject',
+		raw: "type: subject",
 		references: [],
 		revert: null,
-		subject: 'subject',
-		type: 'type',
+		subject: "subject",
+		type: "type",
 	};
 
 	expect(actual).toMatchObject(expected);
 });
 
-test('supports scopes with /', async () => {
-	const message = 'type(some/scope): subject';
+test("supports scopes with /", async () => {
+	const message = "type(some/scope): subject";
 	const actual = await parse(message);
 
-	expect(actual.scope).toBe('some/scope');
-	expect(actual.subject).toBe('subject');
+	expect(actual.scope).toBe("some/scope");
+	expect(actual.subject).toBe("subject");
 });
 
-test('supports scopes with / and empty parserOpts', async () => {
-	const message = 'type(some/scope): subject';
+test("supports scopes with / and empty parserOpts", async () => {
+	const message = "type(some/scope): subject";
 	const actual = await parse(message, undefined, {});
 
-	expect(actual.scope).toBe('some/scope');
-	expect(actual.subject).toBe('subject');
+	expect(actual.scope).toBe("some/scope");
+	expect(actual.subject).toBe("subject");
 });
 
-test('ignores comments', async () => {
-	const message = 'type(some/scope): subject\n# some comment';
-	// @ts-expect-error -- no typings
-	const changelogOpts = await import('conventional-changelog-angular');
+test("ignores comments", async () => {
+	const message = "type(some/scope): subject\n# some comment";
 	const opts = {
-		...changelogOpts.parserOpts,
-		commentChar: '#',
+		...(await angularParserOpts()),
+		commentChar: "#",
 	};
 	const actual = await parse(message, undefined, opts);
 
 	expect(actual.body).toBe(null);
 	expect(actual.footer).toBe(null);
-	expect(actual.subject).toBe('subject');
+	expect(actual.subject).toBe("subject");
 });
 
-test('registers inline #', async () => {
-	const message =
-		'type(some/scope): subject #reference\n# some comment\nthings #reference';
-	// @ts-expect-error -- no typings
-	const changelogOpts = await import('conventional-changelog-angular');
+test("parses inline references in subject and body", async () => {
+	const message = "type(some/scope): subject #1\n\nthings #2";
+	const actual = await parse(message, undefined, await angularParserOpts());
+
+	expect(actual.subject).toBe("subject #1");
+	expect(actual.body).toBe("");
+	// v6 behavior: body content with references moves to footer
+	expect(actual.footer).toBe("things #2");
+	// v6 behavior: both reference instances are captured
+	expect(actual.references).toHaveLength(2);
+	expect(actual.references).toEqual(
+		expect.arrayContaining([
+			expect.objectContaining({
+				raw: "type(some/scope): subject #1",
+				issue: "1",
+				prefix: "#",
+			}),
+			expect.objectContaining({
+				raw: "things #2",
+				issue: "2",
+				prefix: "#",
+			}),
+		]),
+	);
+});
+
+test("filters comment lines when commentChar is set", async () => {
+	const message = "type(scope): subject\n# this is a comment\nbody content";
 	const opts = {
-		...changelogOpts.parserOpts,
-		commentChar: '#',
+		...(await angularParserOpts()),
+		commentChar: "#",
 	};
 	const actual = await parse(message, undefined, opts);
 
-	expect(actual.subject).toBe('subject #reference');
-	expect(actual.body).toBe('things #reference');
+	expect(actual.subject).toBe("subject");
+	expect(actual.body).toBe("body content");
+	// Lines starting with commentChar are completely filtered out (not in body/footer)
+	expect(actual.body).not.toContain("# this is a comment");
+	expect(actual.footer).toBe(null);
 });
 
-test('keep -side notes- in the body section', async () => {
-	const header = 'type(some/scope): subject';
+test("keep -side notes- in the body section", async () => {
+	const header = "type(some/scope): subject";
 	const body =
-		'CI on master branch caught this:\n\n' +
-		'```\n' +
-		'Unhandled Exception:\n' +
+		"CI on master branch caught this:\n\n" +
+		"```\n" +
+		"Unhandled Exception:\n" +
 		"System.AggregateException: One or more errors occurred. (Some problem when connecting to 'api.mycryptoapi.com/eth')\n\n" +
-		'--- End of stack trace from previous location where exception was thrown ---\n\n' +
-		'at GWallet.Backend.FSharpUtil.ReRaise (System.Exception ex) [0x00000] in /Users/runner/work/geewallet/geewallet/src/GWallet.Backend/FSharpUtil.fs:206\n' +
-		'...\n' +
-		'```';
+		"--- End of stack trace from previous location where exception was thrown ---\n\n" +
+		"at GWallet.Backend.FSharpUtil.ReRaise (System.Exception ex) [0x00000] in /Users/runner/work/geewallet/geewallet/src/GWallet.Backend/FSharpUtil.fs:206\n" +
+		"...\n" +
+		"```";
 
-	const message = header + '\n\n' + body;
+	const message = header + "\n\n" + body;
 
 	const actual = await parse(message);
 
 	expect(actual.body).toBe(body);
 });
 
-test('allows separating -side nodes- by setting parserOpts.fieldPattern', async () => {
-	const message =
-		'type(scope): subject\n\nbody text\n-authorName-\nrenovate[bot]';
+test("allows separating -side nodes- by setting parserOpts.fieldPattern", async () => {
+	const message = "type(scope): subject\n\nbody text\n-authorName-\nrenovate[bot]";
 	const changelogOpts = {
 		parserOpts: {
 			fieldPattern: /^-(.*)-$/,
@@ -200,54 +233,52 @@ test('allows separating -side nodes- by setting parserOpts.fieldPattern', async 
 	};
 	const actual = await parse(message, undefined, changelogOpts.parserOpts);
 
-	expect(actual.body).toBe('body text');
-	expect(actual).toHaveProperty('authorName', 'renovate[bot]');
+	expect(actual.body).toBe("body text");
+	expect(actual).toHaveProperty("authorName", "renovate[bot]");
 });
 
-test('parses references leading subject', async () => {
-	const message = '#1 some subject';
-	// @ts-expect-error -- no typings
-	const opts = await import('conventional-changelog-angular');
+test("parses references leading subject", async () => {
+	const message = "#1 some subject";
 	const {
 		references: [actual],
-	} = await parse(message, undefined, opts);
+	} = await parse(message, undefined, await angularParserOpts());
 
-	expect(actual.issue).toBe('1');
+	expect(actual.issue).toBe("1");
 });
 
-test('parses custom references', async () => {
-	const message = '#1 some subject PREFIX-2';
-	const {references} = await parse(message, undefined, {
-		issuePrefixes: ['PREFIX-'],
+test("parses custom references", async () => {
+	const message = "#1 some subject PREFIX-2";
+	const { references } = await parse(message, undefined, {
+		issuePrefixes: ["PREFIX-"],
 	});
 
-	expect(references.find((ref) => ref.issue === '1')).toBeFalsy();
-	expect(references.find((ref) => ref.issue === '2')).toMatchObject({
+	expect(references.find((ref) => ref.issue === "1")).toBeFalsy();
+	expect(references.find((ref) => ref.issue === "2")).toMatchObject({
 		action: null,
-		issue: '2',
+		issue: "2",
 		owner: null,
-		prefix: 'PREFIX-',
-		raw: '#1 some subject PREFIX-2',
+		prefix: "PREFIX-",
+		raw: "#1 some subject PREFIX-2",
 		repository: null,
 	});
 });
 
-test('uses permissive default regex without parser opts', async () => {
-	const message = 'chore(component,demo): bump';
+test("uses permissive default regex without parser opts", async () => {
+	const message = "chore(component,demo): bump";
 	const actual = await parse(message);
 
-	expect(actual.scope).toBe('component,demo');
+	expect(actual.scope).toBe("component,demo");
 });
 
-test('uses permissive default regex with other parser opts', async () => {
-	const message = 'chore(component,demo): bump';
-	const actual = await parse(message, undefined, {commentChar: '#'});
+test("uses permissive default regex with other parser opts", async () => {
+	const message = "chore(component,demo): bump";
+	const actual = await parse(message, undefined, { commentChar: "#" });
 
-	expect(actual.scope).toBe('component,demo');
+	expect(actual.scope).toBe("component,demo");
 });
 
-test('uses restrictive default regex in passed parser opts', async () => {
-	const message = 'chore(component,demo): bump';
+test("uses restrictive default regex in passed parser opts", async () => {
+	const message = "chore(component,demo): bump";
 	const actual = await parse(message, undefined, {
 		headerPattern: /^(\w*)(?:\(([a-z]*)\))?: (.*)$/,
 	});
@@ -256,20 +287,195 @@ test('uses restrictive default regex in passed parser opts', async () => {
 	expect(actual.scope).toBe(null);
 });
 
-test('works with chinese scope by default', async () => {
-	const message = 'fix(面试评价): 测试';
-	const actual = await parse(message, undefined, {commentChar: '#'});
+test("works with chinese scope by default", async () => {
+	const message = "fix(面试评价): 测试";
+	const actual = await parse(message, undefined, { commentChar: "#" });
 
 	expect(actual.subject).not.toBe(null);
 	expect(actual.scope).not.toBe(null);
 });
 
-test('does not work with chinese scopes with incompatible pattern', async () => {
-	const message = 'fix(面试评价): 测试';
+test("does not work with chinese scopes with incompatible pattern", async () => {
+	const message = "fix(面试评价): 测试";
 	const actual = await parse(message, undefined, {
 		headerPattern: /^(\w*)(?:\(([a-z]*)\))?: (.*)$/,
 	});
 
 	expect(actual.subject).toBe(null);
 	expect(actual.scope).toBe(null);
+});
+
+test("parses footer with noteKeywords containing regex-special characters", async () => {
+	const message = "feat: add feature\n\nBody text\n[1]: Custom note footer";
+
+	const actual = await parse(message, undefined, {
+		noteKeywords: ["[1]", "Notes:"],
+	});
+
+	// [1] should be recognized as a note keyword (not regex)
+	expect(actual.notes).toHaveLength(1);
+	expect(actual.notes[0].title).toBe("[1]");
+});
+
+test("parses a non-ASCII type", async () => {
+	const actual = await parse("功能: 新增登录");
+
+	expect(actual.type).toBe("功能");
+	expect(actual.scope).toBe(null);
+	expect(actual.subject).toBe("新增登录");
+});
+
+test("parses a non-ASCII type with a scope", async () => {
+	const actual = await parse("修复(面试评价): 测试");
+
+	expect(actual.type).toBe("修复");
+	expect(actual.scope).toBe("面试评价");
+	expect(actual.subject).toBe("测试");
+});
+
+test.each(["функция", "über", "機能", "feat2", "fix_it", "日本語_2"])(
+	"parses the type %s made of letters, numbers and underscores",
+	async (type) => {
+		const actual = await parse(`${type}: subject`);
+
+		expect(actual.type).toBe(type);
+		expect(actual.subject).toBe("subject");
+	},
+);
+
+test.each(["功 能: subject", "功能。: subject", "功能-x: subject"])(
+	"does not accept spaces or punctuation in the type of %s",
+	async (header) => {
+		const actual = await parse(header);
+
+		expect(actual.type).toBe(null);
+		expect(actual.subject).toBe(null);
+	},
+);
+
+test("parses a non-ASCII type with the conventional commits header patterns", async () => {
+	const parserOpts = {
+		headerPattern: /^(\w*)(?:\((.*)\))?!?: (.*)$/,
+		breakingHeaderPattern: /^(\w*)(?:\((.*)\))?!: (.*)$/,
+		headerCorrespondence: ["type", "scope", "subject"],
+	};
+
+	const actual = await parse("功能(登录)!: 新增登录", undefined, parserOpts);
+
+	expect(actual.type).toBe("功能");
+	expect(actual.scope).toBe("登录");
+	expect(actual.subject).toBe("新增登录");
+	expect(actual.notes).toMatchObject([{ title: "BREAKING CHANGE", text: "新增登录" }]);
+});
+
+test("parses a non-ASCII type after a leading comment", async () => {
+	const actual = await parse("# comment\n功能: subject", undefined, {
+		commentChar: "#",
+	});
+
+	expect(actual.type).toBe("功能");
+	expect(actual.subject).toBe("subject");
+});
+
+test("keeps the flags of the header pattern", async () => {
+	const actual = await parse("功能: SUBJECT", undefined, {
+		headerPattern: /^(\w*): (subject)$/i,
+		headerCorrespondence: ["type", "subject"],
+	});
+
+	expect(actual.type).toBe("功能");
+	expect(actual.subject).toBe("SUBJECT");
+});
+
+test("leaves header patterns that do not start with a word capture alone", async () => {
+	const actual = await parse("功能: subject", undefined, {
+		headerPattern: /^([a-z]*): (.*)$/,
+		headerCorrespondence: ["type", "subject"],
+	});
+
+	expect(actual.type).toBe(null);
+	expect(actual.subject).toBe(null);
+});
+
+test.each(["सुधार", "cafe\u0301"])(
+	"parses the type %s that contains combining marks",
+	async (type) => {
+		const actual = await parse(`${type}: subject`);
+
+		expect(actual.type).toBe(type);
+		expect(actual.subject).toBe("subject");
+	},
+);
+
+test("keeps what a custom header pattern matched before the type was widened", async () => {
+	const actual = await parse("feat: 😀", undefined, {
+		headerPattern: /^(\w*): (.{2})$/,
+		headerCorrespondence: ["type", "subject"],
+	});
+
+	expect(actual.type).toBe("feat");
+	expect(actual.subject).toBe("😀");
+});
+
+test("keeps what a custom breaking header pattern matched before the type was widened", async () => {
+	const actual = await parse("feat!: 😀", undefined, {
+		headerPattern: /^(\w*)!?: (.*)$/,
+		breakingHeaderPattern: /^(\w*)(?:\((.*)\))?!: (.{2})$/,
+		headerCorrespondence: ["type", "subject"],
+	});
+
+	expect(actual.type).toBe("feat");
+	expect(actual.notes).toMatchObject([{ title: "BREAKING CHANGE", text: "😀" }]);
+});
+
+test("does not call a custom parser a second time", async () => {
+	const calls: ParserOptions[] = [];
+	const parser = (_message: string, options?: ParserOptions) => {
+		calls.push(options as ParserOptions);
+		return { type: null, scope: null, subject: null, header: "功能: subject" } as never;
+	};
+
+	await parse("功能: subject", parser, {
+		headerPattern: /^(\w*): (.*)$/,
+		headerCorrespondence: ["type", "subject"],
+	});
+
+	expect(calls).toHaveLength(1);
+	expect(calls[0].headerPattern?.source).toBe("^(\\w*): (.*)$");
+});
+
+test.each([
+	["u", /^(\w*): (.*)$/u],
+	["v", new RegExp("^(\\w*): (.*)$", "v")],
+])("leaves a header pattern with the %s flag alone", async (_flag, headerPattern) => {
+	const actual = await parse("功能: subject", undefined, {
+		headerPattern,
+		headerCorrespondence: ["type", "subject"],
+	});
+
+	expect(actual.type).toBe(null);
+	expect(actual.subject).toBe(null);
+});
+
+test("leaves a header pattern that is not valid in unicode mode alone", async () => {
+	// `\-` outside of a character class is a syntax error once the `u` flag is on
+	const headerPattern = new RegExp("^(\\w*)\\-: (.*)$");
+
+	const actual = await parse("功能-: subject", undefined, {
+		headerPattern,
+		headerCorrespondence: ["type", "subject"],
+	});
+
+	expect(actual.type).toBe(null);
+	expect(actual.subject).toBe(null);
+});
+
+test("still parses an ASCII type with a pattern that is not valid in unicode mode", async () => {
+	const actual = await parse("feat-: subject", undefined, {
+		headerPattern: new RegExp("^(\\w*)\\-: (.*)$"),
+		headerCorrespondence: ["type", "subject"],
+	});
+
+	expect(actual.type).toBe("feat");
+	expect(actual.subject).toBe("subject");
 });

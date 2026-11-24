@@ -1,10 +1,11 @@
-import {case as ensureCase} from '@commitlint/ensure';
-import message from '@commitlint/message';
-import {TargetCaseType, SyncRule} from '@commitlint/types';
+import { case as ensureCase } from "@commitlint/ensure";
+import message from "@commitlint/message";
+import { TargetCaseType, SyncRule } from "@commitlint/types";
 
 /**
- * Since the rule requires first symbol of a subject to be a letter, use
- * Unicode `Cased_Letter` category now to allow non-Latin alphabets as well.
+ * Since the rule requires the first non-whitespace symbol of a subject to be
+ * a letter, use Unicode `Cased_Letter` category now to allow non-Latin
+ * alphabets as well.
  *
  * Do not use `Letter` category directly to avoid capturing `Modifier_Letter`
  * (which just modifiers letters, so we probably shouldn't anyway) and
@@ -19,35 +20,41 @@ import {TargetCaseType, SyncRule} from '@commitlint/types';
  */
 const startsWithLetterRegex = /^[\p{Ll}\p{Lu}\p{Lt}]/iu;
 
-const negated = (when?: string) => when === 'never';
+const negated = (when?: string) => when === "never";
 
 export const subjectCase: SyncRule<TargetCaseType | TargetCaseType[]> = (
 	parsed,
-	when = 'always',
-	value = []
+	when = "always",
+	value = [],
 ) => {
-	const {subject} = parsed;
+	const { subject } = parsed;
 
-	if (typeof subject !== 'string' || !subject.match(startsWithLetterRegex)) {
+	if (typeof subject !== "string" || !subject.trimStart().match(startsWithLetterRegex)) {
 		return [true];
 	}
 
 	const checks = (Array.isArray(value) ? value : [value]).map((check) => {
-		if (typeof check === 'string') {
+		if (typeof check === "string") {
 			return {
-				when: 'always',
+				when: "always",
 				case: check,
 			};
 		}
 		return check;
 	});
 
-	const result = checks.some((check) => {
+	const matches = checks.filter((check) => {
 		const r = ensureCase(subject, check.case);
 		return negated(check.when) ? !r : r;
 	});
 
-	const list = checks.map((c) => c.case).join(', ');
+	const result = matches.length > 0;
+
+	// A `never` rule fails because a case matched, so report the case(s) that
+	// did. An `always` rule fails because none matched, so it keeps reporting
+	// every configured case.
+	const reported = negated(when) && result ? matches : checks;
+	const list = reported.map((c) => c.case).join(", ");
 
 	return [
 		negated(when) ? !result : result,

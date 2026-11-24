@@ -1,3 +1,5 @@
-const path = require('path');
+"use strict";
 
-module.exports = path.join(__dirname, 'cli.js');
+const path = require("node:path");
+
+module.exports = path.join(__dirname, "cli.js");

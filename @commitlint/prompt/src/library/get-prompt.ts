@@ -1,12 +1,12 @@
-import chalk from 'chalk';
-import type {InputCustomOptions} from 'inquirer';
+import pc from "picocolors";
+import type { InputCustomOptions } from "inquirer";
 
-import type {InputSetting, RuleEntry, Result, ResultPart} from './types.js';
+import type { InputSetting, RuleEntry, Result, ResultPart } from "./types.js";
 
-import format from './format.js';
-import getForcedCaseFn from './get-forced-case-fn.js';
-import getForcedLeadingFn from './get-forced-leading-fn.js';
-import meta from './meta.js';
+import format from "./format.js";
+import getForcedCaseFn from "./get-forced-case-fn.js";
+import getForcedLeadingFn from "./get-forced-leading-fn.js";
+import meta from "./meta.js";
 import {
 	enumRuleIsActive,
 	getHasName,
@@ -14,9 +14,9 @@ import {
 	ruleIsActive,
 	ruleIsApplicable,
 	ruleIsNotApplicable,
-} from './utils.js';
+} from "./utils.js";
 
-const EOL = '\n';
+const EOL = "\n";
 
 /**
  * Get a cli prompt based on rule configuration
@@ -28,9 +28,9 @@ const EOL = '\n';
 export default function getPrompt(
 	type: ResultPart,
 	rules: RuleEntry[] = [],
-	settings: InputSetting = {}
+	settings: InputSetting = {},
 ): InputCustomOptions<Result> | null {
-	const emptyRule = rules.filter(getHasName('empty')).find(ruleIsActive);
+	const emptyRule = rules.filter(getHasName("empty")).find(ruleIsActive);
 
 	const mustBeEmpty = emptyRule ? ruleIsApplicable(emptyRule) : false;
 
@@ -40,24 +40,22 @@ export default function getPrompt(
 
 	const required = emptyRule ? ruleIsNotApplicable(emptyRule) : false;
 
-	const forceCaseFn = getForcedCaseFn(rules.find(getHasName('case')));
-	const forceLeadingBlankFn = getForcedLeadingFn(
-		rules.find(getHasName('leading-blank'))
-	);
+	const forceCaseFn = getForcedCaseFn(rules.find(getHasName("case")));
+	const forceLeadingBlankFn = getForcedLeadingFn(rules.find(getHasName("leading-blank")));
 
-	const maxLengthRule = rules.find(getHasName('max-length'));
+	const maxLengthRule = rules.find(getHasName("max-length"));
 	const inputMaxLength = getMaxLength(maxLengthRule);
 
-	const enumRule = rules.filter(getHasName('enum')).find(enumRuleIsActive);
+	const enumRule = rules.filter(getHasName("enum")).find(enumRuleIsActive);
 
 	const tabCompletion = enumRule
 		? enumRule[1][2].map((enumerable) => {
 				const enumSettings = (settings.enumerables || {})[enumerable] || {};
 				return {
 					value: forceLeadingBlankFn(forceCaseFn(enumerable)),
-					description: enumSettings.description || '',
+					description: enumSettings.description || "",
 				};
-		  })
+			})
 		: [];
 
 	const maxLength = (res: Result) => {
@@ -74,41 +72,37 @@ export default function getPrompt(
 	};
 
 	return {
-		type: 'input-custom',
+		type: "input-custom",
 		name: type,
 		message: `${type}:`,
 		validate(input, answers) {
 			if (input.length > maxLength(answers || {})) {
-				return 'Input contains too many characters!';
+				return "Input contains too many characters!";
 			}
 			if (required && input.trim().length === 0) {
 				// Show help if enum is defined and input may not be empty
-				return `⚠ ${chalk.bold(type)} may not be empty.`;
+				return `⚠ ${pc.bold(type)} may not be empty.`;
 			}
 
 			const tabValues = tabCompletion.map((item) => item.value);
-			if (
-				input.length > 0 &&
-				tabValues.length > 0 &&
-				!tabValues.includes(input)
-			) {
-				return `⚠ ${chalk.bold(type)} must be one of ${tabValues.join(', ')}.`;
+			if (input.length > 0 && tabValues.length > 0 && !tabValues.includes(input)) {
+				return `⚠ ${pc.bold(type)} must be one of ${tabValues.join(", ")}.`;
 			}
 			return true;
 		},
 		tabCompletion,
 		log(answers?: Result) {
 			let prefix =
-				`${chalk.white('Please enter a')} ${chalk.bold(type)}: ${meta({
+				`${pc.white("Please enter a")} ${pc.bold(type)}: ${meta({
 					optional: !required,
 					required: required,
-					'tab-completion': typeof enumRule !== 'undefined',
-					header: typeof settings.header !== 'undefined',
-					'multi-line': settings.multiline,
+					"tab-completion": typeof enumRule !== "undefined",
+					header: typeof settings.header !== "undefined",
+					"multi-line": settings.multiline,
 				})}` + EOL;
 
 			if (settings.description) {
-				prefix += chalk.grey(`${settings.description}`) + EOL;
+				prefix += pc.gray(`${settings.description}`) + EOL;
 			}
 			if (answers) {
 				prefix += EOL + `${format(answers, true)}` + EOL;

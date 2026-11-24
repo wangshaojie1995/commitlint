@@ -3,6 +3,99 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [21.2.3](https://github.com/conventional-changelog/commitlint/compare/v21.2.2...v21.2.3) (2026-09-19)
+
+### Bug Fixes
+
+* update vitest monorepo to v5 ([#4992](https://github.com/conventional-changelog/commitlint/issues/4992)) ([91fb534](https://github.com/conventional-changelog/commitlint/commit/91fb534b8c9a1016ea4614f522a79a69977c52e4)), closes [vitest-dev/vitest#10222](https://github.com/vitest-dev/vitest/issues/10222) [vitest-dev/vitest#10460](https://github.com/vitest-dev/vitest/issues/10460) [vitest-dev/vitest#10449](https://github.com/vitest-dev/vitest/issues/10449)
+
+
+## [21.0.2](https://github.com/conventional-changelog/commitlint/compare/v21.0.1...v21.0.2) (2026-05-29)
+
+
+### Bug Fixes
+
+* update vitest monorepo to ~4.1.0 ([#4654](https://github.com/conventional-changelog/commitlint/issues/4654)) ([f1f25d5](https://github.com/conventional-changelog/commitlint/commit/f1f25d59e1f244c1226eb485db67f1166e649bde))
+
+
+
+
+
+## [21.0.1](https://github.com/conventional-changelog/commitlint/compare/v21.0.0...v21.0.1) (2026-05-12)
+
+**Note:** Version bump only for package vitest-environment-commitlint
+
+
+
+
+
+# [21.0.0](https://github.com/conventional-changelog/commitlint/compare/v20.5.3...v21.0.0) (2026-05-08)
+
+
+* chore!: minimum node version v22 (#4679) ([ac2b3f4](https://github.com/conventional-changelog/commitlint/commit/ac2b3f4a947670e46af9a738881ba14158f0987a)), closes [#4679](https://github.com/conventional-changelog/commitlint/issues/4679)
+
+
+### BREAKING CHANGES
+
+* drop node v18 and v20 support
+
+- Bump engines to >=v22 in all 39 package.json files
+- Update @types/node to ^22.0.0
+- Update CI matrix to [22, 24]
+- Update Ubuntu baseline job to ubuntu:26.04
+- Update Dockerfile.ci, .mise.toml, .codesandbox/ci.json
+- Update pre-commit hook to use --ignore-engines
+- Update README and docs
+
+Co-authored-by: Claude Opus 4.6 (1M context) <noreply@anthropic.com>
+
+
+
+
+
+## [20.5.1](https://github.com/conventional-changelog/commitlint/compare/v20.5.0...v20.5.1) (2026-03-31)
+
+**Note:** Version bump only for package vitest-environment-commitlint
+
+
+
+
+
+## [20.4.2](https://github.com/conventional-changelog/commitlint/compare/v20.4.1...v20.4.2) (2026-02-19)
+
+**Note:** Version bump only for package vitest-environment-commitlint
+
+
+
+
+
+# [20.0.0](https://github.com/conventional-changelog/commitlint/compare/v19.9.1...v20.0.0) (2025-09-25)
+
+**Note:** Version bump only for package vitest-environment-commitlint
+
+
+
+
+
+# [19.9.0](https://github.com/conventional-changelog/commitlint/compare/v19.8.1...v19.9.0) (2025-08-26)
+
+
+### Bug Fixes
+
+* update dependency jest-environment-node to v30 ([#4448](https://github.com/conventional-changelog/commitlint/issues/4448)) ([42ca849](https://github.com/conventional-changelog/commitlint/commit/42ca849db3581bb5b7f1bbbcd0dfeda912566e5d))
+
+
+
+
+
+## [19.8.1](https://github.com/conventional-changelog/commitlint/compare/v19.8.0...v19.8.1) (2025-05-08)
+
+**Note:** Version bump only for package vitest-environment-commitlint
+
+
+
+
+
 # [19.0.0](https://github.com/conventional-changelog/commitlint/compare/v18.6.2...v19.0.0) (2024-02-27)
 
 

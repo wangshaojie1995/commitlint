@@ -1,5 +1,35 @@
 # Rules
 
+## body-case
+
+- **condition**: `body` is in case `value`
+- **rule**: `always`
+- **value**
+
+  ```text
+  'lower-case'
+  ```
+
+- **possible values**
+
+  ```js
+  [
+    "lower-case", // default
+    "upper-case", // UPPERCASE
+    "camel-case", // camelCase
+    "kebab-case", // kebab-case
+    "pascal-case", // PascalCase
+    "sentence-case", // Sentence case
+    "snake-case", // snake_case
+    "start-case", // Start Case
+  ];
+  ```
+
+## body-empty
+
+- **condition**: `body` is empty
+- **rule**: `never`
+
 ## body-full-stop
 
 - **condition**: `body` ends with `value`
@@ -15,11 +45,6 @@
 - **condition**: `body` begins with blank line
 - **rule**: `always`
 
-## body-empty
-
-- **condition**: `body` is empty
-- **rule**: `never`
-
 ## body-max-length
 
 - **condition**: `body` has `value` or less characters
@@ -32,7 +57,7 @@
 
 ## body-max-line-length
 
-- **condition**: `body` lines has `value` or less characters
+- **condition**: `body` lines have `value` or less characters, or contain a URL
 - **rule**: `always`
 - **value**
 
@@ -50,40 +75,29 @@
   0
   ```
 
-## body-case
+## breaking-change-exclamation-mark
 
-- **condition**: `body` is in case `value`
+- **condition**: Either both or neither `header` has an exclamation mark before the `:` marker
+  and a line in `footer` matches the regular expression `^BREAKING[ -]CHANGE:`
 - **rule**: `always`
-- **value**
 
-  ```text
-  'lower-case'
-  ```
-
-- **possible values**
-
-  ```js
-  [
-    'lower-case', // default
-    'upper-case', // UPPERCASE
-    'camel-case', // camelCase
-    'kebab-case', // kebab-case
-    'pascal-case', // PascalCase
-    'sentence-case', // Sentence case
-    'snake-case', // snake_case
-    'start-case', // Start Case
-  ];
-  ```
-
-## footer-leading-blank
-
-- **condition**: `footer` begins with blank line
-- **rule**: `always`
+> [!NOTE]
+>
+> This rule enforces that breaking changes are marked by both a `!` in the header
+> and `BREAKING CHANGE` in the footer. The behavior is that of an XNOR operation:
+>
+> - It passes when either both are present or both are not.
+> - It fails when one is present and the other is not.
 
 ## footer-empty
 
 - **condition**: `footer` is empty
 - **rule**: `never`
+
+## footer-leading-blank
+
+- **condition**: `footer` begins with blank line
+- **rule**: `always`
 
 ## footer-max-length
 
@@ -97,7 +111,7 @@
 
 ## footer-max-line-length
 
-- **condition**: `footer` lines has `value` or less characters
+- **condition**: `footer` lines have `value` or less characters
 - **rule**: `always`
 - **value**
 
@@ -115,6 +129,15 @@
   0
   ```
 
+## header-breaking-change
+
+- **condition**: `header` starts with `BREAKING CHANGE:` or `BREAKING-CHANGE:`
+- **rule**: `never`
+
+> [!NOTE]
+>
+> Put `BREAKING CHANGE:` in the footer, or add `!` after the type, e.g. `feat!: drop node 18`.
+
 ## header-case
 
 - **condition**: `header` is in case `value`
@@ -129,14 +152,14 @@
 
   ```js
   [
-    'lower-case', // default
-    'upper-case', // UPPERCASE
-    'camel-case', // camelCase
-    'kebab-case', // kebab-case
-    'pascal-case', // PascalCase
-    'sentence-case', // Sentence case
-    'snake-case', // snake_case
-    'start-case', // Start Case
+    "lower-case", // default
+    "upper-case", // UPPERCASE
+    "camel-case", // camelCase
+    "kebab-case", // kebab-case
+    "pascal-case", // PascalCase
+    "sentence-case", // Sentence case
+    "snake-case", // snake_case
+    "start-case", // Start Case
   ];
   ```
 
@@ -172,29 +195,13 @@
 
 ## header-trim
 
-- **condition**: `header` must not have initial and / or trailing whitespaces
+- **condition**: `header` must not have initial or trailing whitespaces
 - **rule**: `always`
 
 ## references-empty
 
 - **condition**: `references` has at least one entry
 - **rule**: `never`
-
-## scope-enum
-
-- **condition**: `scope` is found in value
-- **rule**: `always`
-- **value**
-
-  ```text
-  []
-  ```
-
-> [!NOTE]
->
-> - This rule always passes if no scopes are provided in the message or the value > is an empty array.
-> - When set to `always`, all message scopes must be found in the value.
-> - When set to `never`, none of the message scopes can be found in the value.
 
 ## scope-case
 
@@ -208,23 +215,87 @@
 
 - **possible values**
 
-```js
-[
-  'lower-case', // default
-  'upper-case', // UPPERCASE
-  'camel-case', // camelCase
-  'kebab-case', // kebab-case
-  'pascal-case', // PascalCase
-  'sentence-case', // Sentence case
-  'snake-case', // snake_case
-  'start-case', // Start Case
-];
-```
+  ```js
+  [
+    "lower-case", // default
+    "upper-case", // UPPERCASE
+    "camel-case", // camelCase
+    "kebab-case", // kebab-case
+    "pascal-case", // PascalCase
+    "sentence-case", // Sentence case
+    "snake-case", // snake_case
+    "start-case", // Start Case
+  ];
+  ```
+
+- extended value (object based)
+
+  ```js
+  {
+    cases: ["kebab-case"],
+    delimiters: ["/"]
+  }
+  ```
+
+  - `cases` — list of allowed case formats
+  - `delimiters` — optional list of delimiter strings used to split multi-segment scopes (default: `["/", "\", ","]`)
+
+## scope-delimiter-style
+
+A delimiter starts with a character other than a Unicode letter, mark, or number, `_`, or `-`. Marks after delimiter symbols stay with the delimiter, preserving emoji such as `❤️`; keycap sequences such as `1️⃣` remain scope content.
+
+- **condition**: all delimiters found in `scope` must match `value`
+- **rule**: `always`
+- **value**
+
+  ```text
+    ["/", "\", ","]
+  ```
+
+> [!NOTE]
+>
+> - When using this rule together with [scope-enum](#scope-enum) or [scope-case](#scope-case), make sure to provide the same `delimiters` configuration in those rules as well. Otherwise scope parsing may become inconsistent.
 
 ## scope-empty
 
 - **condition**: `scope` is empty
 - **rule**: `never`
+
+With `always`, empty parentheses like `feat(): subject` are reported too.
+
+## scope-enum
+
+- **condition**: `scope` is found in value
+- **rule**: `always`
+- **value**
+
+  ```text
+  []
+  ```
+
+- extended value (object based)
+
+  ```js
+  {
+    scopes: ["foo", "bar"],
+    delimiters: ["/"],
+    scopesByType: {
+      build: ["npm", "webpack"]
+    }
+  }
+  ```
+
+  - `scopes` — list of allowed scope values
+  - `delimiters` — optional list of delimiter strings used to split multi-segment scopes (default: `["/", "\", ","]`)
+  - `scopesByType` — optional lists of scope values per commit type. A commit whose `type` has a list is checked against that list instead of `scopes`; all other types keep using `scopes`.
+
+> [!NOTE]
+>
+> - This rule always passes if no scopes are provided in the message or the value > is an empty array.
+> - When set to `always`, all message scopes must be found in the value.
+> - When set to `never`, none of the message scopes can be found in the value.
+> - An empty list in `scopesByType` lifts the restriction for that type, the same way an empty `scopes` does for all types.
+> - With `never`, the per-type list also replaces `scopes` for that type: with `scopesByType: { build: ["npm"] }`, `build(core)` passes even when `core` is in `scopes`.
 
 ## scope-max-length
 
@@ -232,9 +303,9 @@
 - **rule**: `always`
 - **value**
 
-```text
-Infinity
-```
+  ```text
+  Infinity
+  ```
 
 ## scope-min-length
 
@@ -242,38 +313,58 @@ Infinity
 - **rule**: `always`
 - **value**
 
-```text
-0
-```
+  ```text
+  0
+  ```
+
+## signed-off-by
+
+- **condition**: `message` has `value`
+- **rule**: `always`
+- **value**
+
+  ```text
+  'Signed-off-by:'
+  ```
+
+> [!NOTE]
+>
+> The sign-off must be in the trailer block, the last paragraph of the message.
+> Other trailers, such as `Co-authored-by:`, may follow it.
 
 ## subject-case
 
 - **condition**: `subject` is in case `value`
-- **rule**: `always`
+- **rule**: `never`
 - **value**
 
-```js
-['sentence-case', 'start-case', 'pascal-case', 'upper-case'];
-```
+  ```js
+  ["sentence-case", "start-case", "pascal-case", "upper-case"];
+  ```
 
 - **possible values**
 
-```js
-[
-  'lower-case',    // lower case
-  'upper-case',    // UPPERCASE
-  'camel-case',    // camelCase
-  'kebab-case',    // kebab-case
-  'pascal-case',   // PascalCase
-  'sentence-case', // Sentence case
-  'snake-case',    // snake_case
-  'start-case'.    // Start Case
-]
-```
+  ```js
+  [
+    "lower-case", // lower case
+    "upper-case", // UPPERCASE
+    "camel-case", // camelCase
+    "kebab-case", // kebab-case
+    "pascal-case", // PascalCase
+    "sentence-case", // Sentence case
+    "snake-case", // snake_case
+    "start-case", // Start Case
+  ];
+  ```
 
 ## subject-empty
 
 - **condition**: `subject` is empty
+- **rule**: `never`
+
+## subject-exclamation-mark
+
+- **condition**: `subject` has exclamation before the `:` marker
 - **rule**: `never`
 
 ## subject-full-stop
@@ -282,9 +373,9 @@ Infinity
 - **rule**: `never`
 - **value**
 
-```text
-'.'
-```
+  ```text
+  '.'
+  ```
 
 ## subject-max-length
 
@@ -292,9 +383,9 @@ Infinity
 - **rule**: `always`
 - **value**
 
-```text
-Infinity
-```
+  ```text
+  Infinity
+  ```
 
 ## subject-min-length
 
@@ -302,35 +393,18 @@ Infinity
 - **rule**: `always`
 - **value**
 
-```text
-0
-```
+  ```text
+  0
+  ```
 
-## subject-exclamation-mark
+## trailer-exists
 
-- **condition**: `subject` has exclamation before the `:` marker
-- **rule**: `never`
-
-## type-enum
-
-- **condition**: `type` is found in value
+- **condition**: `message` has trailer `value`
 - **rule**: `always`
 - **value**
 
-  ```js
-  [
-    'build',
-    'chore',
-    'ci',
-    'docs',
-    'feat',
-    'fix',
-    'perf',
-    'refactor',
-    'revert',
-    'style',
-    'test',
-  ];
+  ```text
+  'Signed-off-by:'
   ```
 
 ## type-case
@@ -347,14 +421,14 @@ Infinity
 
   ```js
   [
-    'lower-case', // default
-    'upper-case', // UPPERCASE
-    'camel-case', // camelCase
-    'kebab-case', // kebab-case
-    'pascal-case', // PascalCase
-    'sentence-case', // Sentence case
-    'snake-case', // snake_case
-    'start-case', // Start Case
+    "lower-case", // default
+    "upper-case", // UPPERCASE
+    "camel-case", // camelCase
+    "kebab-case", // kebab-case
+    "pascal-case", // PascalCase
+    "sentence-case", // Sentence case
+    "snake-case", // snake_case
+    "start-case", // Start Case
   ];
   ```
 
@@ -362,6 +436,16 @@ Infinity
 
 - **condition**: `type` is empty
 - **rule**: `never`
+
+## type-enum
+
+- **condition**: `type` is found in value
+- **rule**: `always`
+- **value**
+
+  ```js
+  ["build", "chore", "ci", "docs", "feat", "fix", "perf", "refactor", "revert", "style", "test"];
+  ```
 
 ## type-max-length
 
@@ -381,24 +465,4 @@ Infinity
 
   ```text
   0
-  ```
-
-## signed-off-by
-
-- **condition**: `message` has `value`
-- **rule**: `always`
-- **value**
-
-  ```text
-  'Signed-off-by:'
-  ```
-
-## trailer-exists
-
-- **condition**: `message` has trailer `value`
-- **rule**: `always`
-- **value**
-
-  ```text
-  'Signed-off-by:'
   ```

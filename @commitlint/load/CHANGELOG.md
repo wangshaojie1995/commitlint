@@ -3,6 +3,241 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [21.2.4](https://github.com/conventional-changelog/commitlint/compare/v21.2.3...v21.2.4) (2026-10-18)
+
+### Bug Fixes
+
+* **load:** replace config file arrays with seed arrays ([#5056](https://github.com/conventional-changelog/commitlint/issues/5056)) ([bedc10f](https://github.com/conventional-changelog/commitlint/commit/bedc10f907de3d9a771635e8f014d5ab22526734))
+
+### Performance Improvements
+
+* **load:** load typescript configs with jiti directly ([#5052](https://github.com/conventional-changelog/commitlint/issues/5052)) ([3103b86](https://github.com/conventional-changelog/commitlint/commit/3103b86c6f53f03430619a8c178e0c80a385dfcd))
+
+
+## [21.2.3](https://github.com/conventional-changelog/commitlint/compare/v21.2.2...v21.2.3) (2026-09-19)
+
+### Bug Fixes
+
+* **load:** detect dynamic await support on node majors above 20 ([#4961](https://github.com/conventional-changelog/commitlint/issues/4961)) ([77df555](https://github.com/conventional-changelog/commitlint/commit/77df55532e77108714d7c0090f7f85a9b7b4a0af))
+* **load:** run the parser factory of scoped conventional-changelog presets ([#4968](https://github.com/conventional-changelog/commitlint/issues/4968)) ([a42b18c](https://github.com/conventional-changelog/commitlint/commit/a42b18c5cde5e70b39b636017b8dfbd7dfe890ca)), closes [#2488](https://github.com/conventional-changelog/commitlint/issues/2488)
+* update vitest monorepo to v5 ([#4992](https://github.com/conventional-changelog/commitlint/issues/4992)) ([91fb534](https://github.com/conventional-changelog/commitlint/commit/91fb534b8c9a1016ea4614f522a79a69977c52e4)), closes [vitest-dev/vitest#10222](https://github.com/vitest-dev/vitest/issues/10222) [vitest-dev/vitest#10460](https://github.com/vitest-dev/vitest/issues/10460) [vitest-dev/vitest#10449](https://github.com/vitest-dev/vitest/issues/10449)
+
+
+## [21.2.2](https://github.com/conventional-changelog/commitlint/compare/v21.2.1...v21.2.2) (2026-08-13)
+
+**Note:** Version bump only for package @commitlint/load
+
+
+
+
+
+# [21.2.0](https://github.com/conventional-changelog/commitlint/compare/v21.1.0...v21.2.0) (2026-06-30)
+
+
+### Features
+
+* **resolve-extends:** resolve pure-ESM presets (conventional-changelog v7/v9/v10) ([#4859](https://github.com/conventional-changelog/commitlint/issues/4859)) ([fdb566f](https://github.com/conventional-changelog/commitlint/commit/fdb566fe59457a786eac80e2a8cbb994638daba0))
+
+
+
+
+
+# [21.1.0](https://github.com/conventional-changelog/commitlint/compare/v21.0.2...v21.1.0) (2026-06-23)
+
+**Note:** Version bump only for package @commitlint/load
+
+
+
+
+
+## [21.0.2](https://github.com/conventional-changelog/commitlint/compare/v21.0.1...v21.0.2) (2026-05-29)
+
+**Note:** Version bump only for package @commitlint/load
+
+
+
+
+
+## [21.0.1](https://github.com/conventional-changelog/commitlint/compare/v21.0.0...v21.0.1) (2026-05-12)
+
+
+### Bug Fixes
+
+* **load:** only resolve relative formatter paths ([#4761](https://github.com/conventional-changelog/commitlint/issues/4761)) ([f8be069](https://github.com/conventional-changelog/commitlint/commit/f8be0698ff20b211d21d6d7fde7920512cd42845))
+
+
+
+
+
+# [21.0.0](https://github.com/conventional-changelog/commitlint/compare/v20.5.3...v21.0.0) (2026-05-08)
+
+
+* chore!: minimum node version v22 (#4679) ([ac2b3f4](https://github.com/conventional-changelog/commitlint/commit/ac2b3f4a947670e46af9a738881ba14158f0987a)), closes [#4679](https://github.com/conventional-changelog/commitlint/issues/4679)
+
+
+### BREAKING CHANGES
+
+* drop node v18 and v20 support
+
+- Bump engines to >=v22 in all 39 package.json files
+- Update @types/node to ^22.0.0
+- Update CI matrix to [22, 24]
+- Update Ubuntu baseline job to ubuntu:26.04
+- Update Dockerfile.ci, .mise.toml, .codesandbox/ci.json
+- Update pre-commit hook to use --ignore-engines
+- Update README and docs
+
+Co-authored-by: Claude Opus 4.6 (1M context) <noreply@anthropic.com>
+
+
+
+
+
+## [20.5.3](https://github.com/conventional-changelog/commitlint/compare/v20.5.2...v20.5.3) (2026-04-30)
+
+**Note:** Version bump only for package @commitlint/load
+
+
+
+
+
+## [20.5.2](https://github.com/conventional-changelog/commitlint/compare/v20.5.1...v20.5.2) (2026-04-25)
+
+**Note:** Version bump only for package @commitlint/load
+
+
+
+
+
+# [20.5.0](https://github.com/conventional-changelog/commitlint/compare/v20.4.4...v20.5.0) (2026-03-15)
+
+
+### Bug Fixes
+
+* **load:** resolve async config exports in CJS projects ([#4659](https://github.com/conventional-changelog/commitlint/issues/4659)) ([fce263f](https://github.com/conventional-changelog/commitlint/commit/fce263f544977958f476d6f4c8539e5fab996198)), closes [#4557](https://github.com/conventional-changelog/commitlint/issues/4557)
+* **resolve-extends:** always resolve extended parser presets for proper merging ([#4647](https://github.com/conventional-changelog/commitlint/issues/4647)) ([e9ef76c](https://github.com/conventional-changelog/commitlint/commit/e9ef76caf44e77f22086910ce706bbe0c03b0ab5)), closes [#4640](https://github.com/conventional-changelog/commitlint/issues/4640)
+
+
+
+
+
+## [20.4.4](https://github.com/conventional-changelog/commitlint/compare/v20.4.3...v20.4.4) (2026-03-12)
+
+**Note:** Version bump only for package @commitlint/load
+
+
+
+
+
+## [20.4.3](https://github.com/conventional-changelog/commitlint/compare/v20.4.2...v20.4.3) (2026-03-03)
+
+
+### Bug Fixes
+
+* footer parser does not escape special chars for regex [#4560](https://github.com/conventional-changelog/commitlint/issues/4560) ([#4634](https://github.com/conventional-changelog/commitlint/issues/4634)) ([8ff7c7f](https://github.com/conventional-changelog/commitlint/commit/8ff7c7fcbc2db2b45910ecb5c01e9f1763060770))
+* npx usage [#613](https://github.com/conventional-changelog/commitlint/issues/613) ([#4630](https://github.com/conventional-changelog/commitlint/issues/4630)) ([1644f1e](https://github.com/conventional-changelog/commitlint/commit/1644f1e8f74a844547e44e3e7a76fabbb96775f8)), closes [#3](https://github.com/conventional-changelog/commitlint/issues/3) [#1](https://github.com/conventional-changelog/commitlint/issues/1) [#2](https://github.com/conventional-changelog/commitlint/issues/2) [#4](https://github.com/conventional-changelog/commitlint/issues/4) [#5](https://github.com/conventional-changelog/commitlint/issues/5) [#7](https://github.com/conventional-changelog/commitlint/issues/7) [#6](https://github.com/conventional-changelog/commitlint/issues/6)
+
+
+
+
+
+# [20.4.0](https://github.com/conventional-changelog/commitlint/compare/v20.3.1...v20.4.0) (2026-01-30)
+
+
+### Features
+
+* upgrade conventional commit packages [#4082](https://github.com/conventional-changelog/commitlint/issues/4082) ([#4597](https://github.com/conventional-changelog/commitlint/issues/4597)) ([3aaf0a6](https://github.com/conventional-changelog/commitlint/commit/3aaf0a603c4047d268d85207957c919f45b60e1f))
+
+
+
+
+
+## [20.3.1](https://github.com/conventional-changelog/commitlint/compare/v20.3.0...v20.3.1) (2026-01-08)
+
+**Note:** Version bump only for package @commitlint/load
+
+
+
+
+
+# [20.3.0](https://github.com/conventional-changelog/commitlint/compare/v20.2.0...v20.3.0) (2026-01-01)
+
+
+### Features
+
+* add support for .mts config file ([#4581](https://github.com/conventional-changelog/commitlint/issues/4581)) ([66e05ab](https://github.com/conventional-changelog/commitlint/commit/66e05abc34dd33bed7b5d1830328bc8740b71eaa))
+
+
+
+
+
+# [20.2.0](https://github.com/conventional-changelog/commitlint/compare/v20.1.0...v20.2.0) (2025-12-05)
+
+**Note:** Version bump only for package @commitlint/load
+
+
+
+
+
+# [20.1.0](https://github.com/conventional-changelog/commitlint/compare/v20.0.0...v20.1.0) (2025-09-30)
+
+**Note:** Version bump only for package @commitlint/load
+
+
+
+
+
+# [20.0.0](https://github.com/conventional-changelog/commitlint/compare/v19.9.1...v20.0.0) (2025-09-25)
+
+**Note:** Version bump only for package @commitlint/load
+
+
+
+
+
+## [19.8.1](https://github.com/conventional-changelog/commitlint/compare/v19.8.0...v19.8.1) (2025-05-08)
+
+**Note:** Version bump only for package @commitlint/load
+
+
+
+
+
+# [19.8.0](https://github.com/conventional-changelog/commitlint/compare/v19.7.1...v19.8.0) (2025-03-07)
+
+
+### Performance Improvements
+
+* use `node:` prefix to bypass require.cache call for builtins ([#4302](https://github.com/conventional-changelog/commitlint/issues/4302)) ([0cd8f41](https://github.com/conventional-changelog/commitlint/commit/0cd8f410573fe11383f788b1ceb7e0946143591d))
+
+
+
+
+
+## [19.6.1](https://github.com/conventional-changelog/commitlint/compare/v19.6.0...v19.6.1) (2024-12-15)
+
+**Note:** Version bump only for package @commitlint/load
+
+
+
+
+
+# [19.5.0](https://github.com/conventional-changelog/commitlint/compare/v19.4.1...v19.5.0) (2024-09-11)
+
+**Note:** Version bump only for package @commitlint/load
+
+
+
+
+
+# [19.4.0](https://github.com/conventional-changelog/commitlint/compare/v19.3.1...v19.4.0) (2024-08-07)
+
+**Note:** Version bump only for package @commitlint/load
+
+
+
+
+
 # [19.2.0](https://github.com/conventional-changelog/commitlint/compare/v19.1.0...v19.2.0) (2024-03-15)
 
 

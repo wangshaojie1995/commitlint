@@ -7,19 +7,25 @@ Install `@commitlint/cli` and a `@commitlint/config-*` / `commitlint-config-*` o
 ::: code-group
 
 ```sh [npm]
-npm install --save-dev @commitlint/{cli,config-conventional}
+npm install -D @commitlint/cli @commitlint/config-conventional
 ```
 
 ```sh [yarn]
-yarn add --dev @commitlint/{cli,config-conventional}
-```
-
-```sh [npm (Windows)]
-npm install --save-dev @commitlint/config-conventional @commitlint/cli
+yarn add -D @commitlint/cli @commitlint/config-conventional
 ```
 
 ```sh [pnpm]
-pnpm add --save-dev @commitlint/{cli,config-conventional}
+pnpm add -D @commitlint/cli @commitlint/config-conventional
+```
+
+```sh [bun]
+bun add -d @commitlint/cli @commitlint/config-conventional
+```
+
+```sh [deno]
+deno add -D npm:@commitlint/cli npm:@commitlint/config-conventional
+# Deno 2 only: create a local node_modules directory for Node.js module resolution
+deno install --node-modules-dir=auto
 ```
 
 :::
@@ -28,8 +34,17 @@ pnpm add --save-dev @commitlint/{cli,config-conventional}
 
 Configure commitlint to use conventional config
 
-```sh
+::: code-group
+
+```sh [Linux / macOS]
 echo "export default { extends: ['@commitlint/config-conventional'] };" > commitlint.config.js
 ```
+
+```sh [Windows]
+# Here we use the node command to avoid encoding issue on Windows.
+node -e "fs.writeFileSync('commitlint.config.js', process.argv[1])" "export default { extends: ['@commitlint/config-conventional'] };"
+```
+
+:::
 
 Refer to [configuration documentation](/reference/configuration) for more information.

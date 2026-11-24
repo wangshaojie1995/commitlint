@@ -5,6 +5,9 @@ Lint your nx project commits
 Shareable `commitlint` config enforcing nx project and workspace names as scopes.
 Use with [@commitlint/cli](../cli) and [@commitlint/prompt-cli](../prompt-cli).
 
+Scopes are read from the nx project graph, so a project contributed by an nx plugin is
+a valid scope even though it has no `project.json` or `package.json` of its own.
+
 ## Getting started
 
 ```
@@ -24,20 +27,19 @@ In your .commitlintrc.js file:
 async function getConfig() {
   const {
     default: {
-      utils: {getProjects},
+      utils: { getProjects },
     },
-  } = await import('@commitlint/config-nx-scopes');
+  } = await import("@commitlint/config-nx-scopes");
 
   return {
     rules: {
-      'scope-enum': async (ctx) => [
+      "scope-enum": async (ctx) => [
         2,
-        'always',
+        "always",
         [
           ...(await getProjects(
             ctx,
-            ({name, projectType}) =>
-              !name.includes('e2e') && projectType == 'application'
+            ({ name, projectType }) => !name.includes("e2e") && projectType == "application",
           )),
         ],
       ],
@@ -57,21 +59,16 @@ In your .commitlintrc.js file:
 async function getConfig() {
   const {
     default: {
-      utils: {getProjects},
+      utils: { getProjects },
     },
-  } = await import('@commitlint/config-nx-scopes');
+  } = await import("@commitlint/config-nx-scopes");
 
   return {
     rules: {
-      'scope-enum': async (ctx) => [
+      "scope-enum": async (ctx) => [
         2,
-        'always',
-        [
-          ...(await getProjects(
-            ctx,
-            ({tags}) => !tags.includes('stage:end-of-life')
-          )),
-        ],
+        "always",
+        [...(await getProjects(ctx, ({ tags }) => !tags.includes("stage:end-of-life")))],
       ],
     },
     // . . .
@@ -97,17 +94,14 @@ packages
 └── web
 
 ❯ echo "build(api): change something in api's build" | commitlint
-⧗   input: build(api): change something in api's build
-✔   found 0 problems, 0 warnings
 
 ❯ echo "test(foo): this won't pass" | commitlint
-⧗   input: test(foo): this won't pass
+⧗   --- input ---
+test(foo): this won't pass
 ✖   scope must be one of [api, app, web] [scope-enum]
 ✖   found 1 problems, 0 warnings
 
 ❯ echo "ci: do some general maintenance" | commitlint
-⧗   input: ci: do some general maintenance
-✔   found 0 problems, 0 warnings
 ```
 
 Consult [Rules reference](https://commitlint.js.org/reference/rules) for a list of available rules.

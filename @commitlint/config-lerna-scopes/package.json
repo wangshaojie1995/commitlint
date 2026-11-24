@@ -1,35 +1,43 @@
 {
   "name": "@commitlint/config-lerna-scopes",
-  "type": "module",
-  "version": "19.0.0",
+  "version": "21.2.0",
+  "gitHead": "e82f05a737626bb69979d14564f5ff601997f679",
   "description": "Shareable commitlint config enforcing lerna package and workspace names as scopes",
-  "main": "index.js",
-  "files": [
-    "index.js"
+  "keywords": [
+    "commitlint",
+    "commitlint-config",
+    "conventional-changelog",
+    "lerna"
   ],
-  "scripts": {
-    "deps": "dep-check",
-    "pkg": "pkg-check"
+  "homepage": "https://commitlint.js.org/",
+  "bugs": {
+    "url": "https://github.com/conventional-changelog/commitlint/issues"
   },
+  "license": "MIT",
+  "author": "Jan Biasi (https://github.com/janbiasi)",
   "repository": {
     "type": "git",
     "url": "https://github.com/conventional-changelog/commitlint.git",
     "directory": "@commitlint/config-lerna-scopes"
   },
-  "keywords": [
-    "conventional-changelog",
-    "commitlint",
-    "commitlint-config",
-    "lerna"
+  "files": [
+    "index.js"
   ],
-  "author": "Mario Nebl <hello@herebecode.com>",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/conventional-changelog/commitlint/issues"
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "deps": "dep-check",
+    "pkg": "pkg-check"
   },
-  "homepage": "https://commitlint.js.org/",
+  "dependencies": {
+    "@commitlint/config-workspace-scopes": "workspace:^"
+  },
+  "devDependencies": {
+    "@commitlint/test": "workspace:^",
+    "@commitlint/utils": "workspace:^"
+  },
   "peerDependencies": {
-    "lerna": "^5.0.0 || ^6"
+    "lerna": "*"
   },
   "peerDependenciesMeta": {
     "lerna": {
@@ -37,18 +45,6 @@
     }
   },
   "engines": {
-    "node": ">=v18"
-  },
-  "dependencies": {
-    "@lerna/project": "^6.0.0",
-    "glob": "^10.3.10",
-    "import-from": "^4.0.0",
-    "semver": "^7.6.0"
-  },
-  "devDependencies": {
-    "@commitlint/test": "^19.0.0",
-    "@commitlint/utils": "^19.0.0",
-    "@types/glob": "^8.1.0"
-  },
-  "gitHead": "70f7f4688b51774e7ac5e40e896cdaa3f132b2bc"
+    "node": ">=22.12.0"
+  }
 }

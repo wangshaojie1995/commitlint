@@ -3,6 +3,230 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [21.2.4](https://github.com/conventional-changelog/commitlint/compare/v21.2.3...v21.2.4) (2026-10-18)
+
+**Note:** Version bump only for package @commitlint/config-angular
+
+
+
+
+
+## [21.2.3](https://github.com/conventional-changelog/commitlint/compare/v21.2.2...v21.2.3) (2026-09-19)
+
+**Note:** Version bump only for package @commitlint/config-angular
+
+
+
+
+
+## [21.2.2](https://github.com/conventional-changelog/commitlint/compare/v21.2.1...v21.2.2) (2026-08-13)
+
+**Note:** Version bump only for package @commitlint/config-angular
+
+
+
+
+
+# [21.2.0](https://github.com/conventional-changelog/commitlint/compare/v21.1.0...v21.2.0) (2026-06-30)
+
+**Note:** Version bump only for package @commitlint/config-angular
+
+
+
+
+
+# [21.1.0](https://github.com/conventional-changelog/commitlint/compare/v21.0.2...v21.1.0) (2026-06-23)
+
+**Note:** Version bump only for package @commitlint/config-angular
+
+
+
+
+
+## [21.0.2](https://github.com/conventional-changelog/commitlint/compare/v21.0.1...v21.0.2) (2026-05-29)
+
+**Note:** Version bump only for package @commitlint/config-angular
+
+
+
+
+
+## [21.0.1](https://github.com/conventional-changelog/commitlint/compare/v21.0.0...v21.0.1) (2026-05-12)
+
+**Note:** Version bump only for package @commitlint/config-angular
+
+
+
+
+
+# [21.0.0](https://github.com/conventional-changelog/commitlint/compare/v20.5.3...v21.0.0) (2026-05-08)
+
+
+* chore!: minimum node version v22 (#4679) ([ac2b3f4](https://github.com/conventional-changelog/commitlint/commit/ac2b3f4a947670e46af9a738881ba14158f0987a)), closes [#4679](https://github.com/conventional-changelog/commitlint/issues/4679)
+
+
+### BREAKING CHANGES
+
+* drop node v18 and v20 support
+
+- Bump engines to >=v22 in all 39 package.json files
+- Update @types/node to ^22.0.0
+- Update CI matrix to [22, 24]
+- Update Ubuntu baseline job to ubuntu:26.04
+- Update Dockerfile.ci, .mise.toml, .codesandbox/ci.json
+- Update pre-commit hook to use --ignore-engines
+- Update README and docs
+
+Co-authored-by: Claude Opus 4.6 (1M context) <noreply@anthropic.com>
+
+
+
+
+
+## [20.5.3](https://github.com/conventional-changelog/commitlint/compare/v20.5.2...v20.5.3) (2026-04-30)
+
+**Note:** Version bump only for package @commitlint/config-angular
+
+
+
+
+
+# [20.5.0](https://github.com/conventional-changelog/commitlint/compare/v20.4.4...v20.5.0) (2026-03-15)
+
+**Note:** Version bump only for package @commitlint/config-angular
+
+
+
+
+
+## [20.4.4](https://github.com/conventional-changelog/commitlint/compare/v20.4.3...v20.4.4) (2026-03-12)
+
+**Note:** Version bump only for package @commitlint/config-angular
+
+
+
+
+
+## [20.4.3](https://github.com/conventional-changelog/commitlint/compare/v20.4.2...v20.4.3) (2026-03-03)
+
+**Note:** Version bump only for package @commitlint/config-angular
+
+
+
+
+
+## [20.4.2](https://github.com/conventional-changelog/commitlint/compare/v20.4.1...v20.4.2) (2026-02-19)
+
+**Note:** Version bump only for package @commitlint/config-angular
+
+
+
+
+
+## [20.4.1](https://github.com/conventional-changelog/commitlint/compare/v20.4.0...v20.4.1) (2026-02-02)
+
+**Note:** Version bump only for package @commitlint/config-angular
+
+
+
+
+
+# [20.4.0](https://github.com/conventional-changelog/commitlint/compare/v20.3.1...v20.4.0) (2026-01-30)
+
+**Note:** Version bump only for package @commitlint/config-angular
+
+
+
+
+
+## [20.3.1](https://github.com/conventional-changelog/commitlint/compare/v20.3.0...v20.3.1) (2026-01-08)
+
+**Note:** Version bump only for package @commitlint/config-angular
+
+
+
+
+
+# [20.3.0](https://github.com/conventional-changelog/commitlint/compare/v20.2.0...v20.3.0) (2026-01-01)
+
+**Note:** Version bump only for package @commitlint/config-angular
+
+
+
+
+
+# [20.2.0](https://github.com/conventional-changelog/commitlint/compare/v20.1.0...v20.2.0) (2025-12-05)
+
+**Note:** Version bump only for package @commitlint/config-angular
+
+
+
+
+
+# [20.0.0](https://github.com/conventional-changelog/commitlint/compare/v19.9.1...v20.0.0) (2025-09-25)
+
+**Note:** Version bump only for package @commitlint/config-angular
+
+
+
+
+
+## [19.8.1](https://github.com/conventional-changelog/commitlint/compare/v19.8.0...v19.8.1) (2025-05-08)
+
+**Note:** Version bump only for package @commitlint/config-angular
+
+
+
+
+
+# [19.8.0](https://github.com/conventional-changelog/commitlint/compare/v19.7.1...v19.8.0) (2025-03-07)
+
+**Note:** Version bump only for package @commitlint/config-angular
+
+
+
+
+
+## [19.7.1](https://github.com/conventional-changelog/commitlint/compare/v19.7.0...v19.7.1) (2025-02-02)
+
+**Note:** Version bump only for package @commitlint/config-angular
+
+
+
+
+
+# [19.7.0](https://github.com/conventional-changelog/commitlint/compare/v19.6.1...v19.7.0) (2025-01-04)
+
+**Note:** Version bump only for package @commitlint/config-angular
+
+
+
+
+
+# [19.6.0](https://github.com/conventional-changelog/commitlint/compare/v19.5.0...v19.6.0) (2024-11-19)
+
+**Note:** Version bump only for package @commitlint/config-angular
+
+
+
+
+
+# [19.5.0](https://github.com/conventional-changelog/commitlint/compare/v19.4.1...v19.5.0) (2024-09-11)
+
+**Note:** Version bump only for package @commitlint/config-angular
+
+
+
+
+
+## [19.4.1](https://github.com/conventional-changelog/commitlint/compare/v19.4.0...v19.4.1) (2024-08-28)
+
+**Note:** Version bump only for package @commitlint/config-angular
+
+
+
+
+
 # [19.3.0](https://github.com/conventional-changelog/commitlint/compare/v19.2.2...v19.3.0) (2024-04-23)
 
 **Note:** Version bump only for package @commitlint/config-angular

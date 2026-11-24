@@ -3,6 +3,191 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+## [21.2.3](https://github.com/conventional-changelog/commitlint/compare/v21.2.2...v21.2.3) (2026-09-19)
+
+**Note:** Version bump only for package @commitlint/resolve-extends
+
+
+
+
+
+## [21.2.2](https://github.com/conventional-changelog/commitlint/compare/v21.2.1...v21.2.2) (2026-08-13)
+
+### Bug Fixes
+
+* **resolve-extends:** support Yarn Plug'n'Play ([#4933](https://github.com/conventional-changelog/commitlint/issues/4933)) ([67ee127](https://github.com/conventional-changelog/commitlint/commit/67ee1271ea5960e774b4b956830ab4705da9040c))
+
+
+# [21.2.0](https://github.com/conventional-changelog/commitlint/compare/v21.1.0...v21.2.0) (2026-06-30)
+
+
+### Features
+
+* **resolve-extends:** resolve pure-ESM presets (conventional-changelog v7/v9/v10) ([#4859](https://github.com/conventional-changelog/commitlint/issues/4859)) ([fdb566f](https://github.com/conventional-changelog/commitlint/commit/fdb566fe59457a786eac80e2a8cbb994638daba0))
+
+
+
+
+
+# [21.1.0](https://github.com/conventional-changelog/commitlint/compare/v21.0.2...v21.1.0) (2026-06-23)
+
+**Note:** Version bump only for package @commitlint/resolve-extends
+
+
+
+
+
+## [21.0.1](https://github.com/conventional-changelog/commitlint/compare/v21.0.0...v21.0.1) (2026-05-12)
+
+**Note:** Version bump only for package @commitlint/resolve-extends
+
+
+
+
+
+# [21.0.0](https://github.com/conventional-changelog/commitlint/compare/v20.5.3...v21.0.0) (2026-05-08)
+
+
+* chore!: minimum node version v22 (#4679) ([ac2b3f4](https://github.com/conventional-changelog/commitlint/commit/ac2b3f4a947670e46af9a738881ba14158f0987a)), closes [#4679](https://github.com/conventional-changelog/commitlint/issues/4679)
+
+
+### BREAKING CHANGES
+
+* drop node v18 and v20 support
+
+- Bump engines to >=v22 in all 39 package.json files
+- Update @types/node to ^22.0.0
+- Update CI matrix to [22, 24]
+- Update Ubuntu baseline job to ubuntu:26.04
+- Update Dockerfile.ci, .mise.toml, .codesandbox/ci.json
+- Update pre-commit hook to use --ignore-engines
+- Update README and docs
+
+Co-authored-by: Claude Opus 4.6 (1M context) <noreply@anthropic.com>
+
+
+
+
+
+## [20.5.3](https://github.com/conventional-changelog/commitlint/compare/v20.5.2...v20.5.3) (2026-04-30)
+
+**Note:** Version bump only for package @commitlint/resolve-extends
+
+
+
+
+
+## [20.5.2](https://github.com/conventional-changelog/commitlint/compare/v20.5.1...v20.5.2) (2026-04-25)
+
+
+### Bug Fixes
+
+* update dependency global-directory to v5 ([#4698](https://github.com/conventional-changelog/commitlint/issues/4698)) ([a8b6224](https://github.com/conventional-changelog/commitlint/commit/a8b622497b5ac1bb8d56791a678cc03021b5ade8))
+
+
+
+
+
+# [20.5.0](https://github.com/conventional-changelog/commitlint/compare/v20.4.4...v20.5.0) (2026-03-15)
+
+
+### Bug Fixes
+
+* **resolve-extends:** always resolve extended parser presets for proper merging ([#4647](https://github.com/conventional-changelog/commitlint/issues/4647)) ([e9ef76c](https://github.com/conventional-changelog/commitlint/commit/e9ef76caf44e77f22086910ce706bbe0c03b0ab5)), closes [#4640](https://github.com/conventional-changelog/commitlint/issues/4640)
+
+
+
+
+
+## [20.4.4](https://github.com/conventional-changelog/commitlint/compare/v20.4.3...v20.4.4) (2026-03-12)
+
+**Note:** Version bump only for package @commitlint/resolve-extends
+
+
+
+
+
+## [20.4.3](https://github.com/conventional-changelog/commitlint/compare/v20.4.2...v20.4.3) (2026-03-03)
+
+
+### Bug Fixes
+
+* npx usage [#613](https://github.com/conventional-changelog/commitlint/issues/613) ([#4630](https://github.com/conventional-changelog/commitlint/issues/4630)) ([1644f1e](https://github.com/conventional-changelog/commitlint/commit/1644f1e8f74a844547e44e3e7a76fabbb96775f8)), closes [#3](https://github.com/conventional-changelog/commitlint/issues/3) [#1](https://github.com/conventional-changelog/commitlint/issues/1) [#2](https://github.com/conventional-changelog/commitlint/issues/2) [#4](https://github.com/conventional-changelog/commitlint/issues/4) [#5](https://github.com/conventional-changelog/commitlint/issues/5) [#7](https://github.com/conventional-changelog/commitlint/issues/7) [#6](https://github.com/conventional-changelog/commitlint/issues/6)
+
+
+
+
+
+# [20.4.0](https://github.com/conventional-changelog/commitlint/compare/v20.3.1...v20.4.0) (2026-01-30)
+
+**Note:** Version bump only for package @commitlint/resolve-extends
+
+
+
+
+
+## [20.3.1](https://github.com/conventional-changelog/commitlint/compare/v20.3.0...v20.3.1) (2026-01-08)
+
+**Note:** Version bump only for package @commitlint/resolve-extends
+
+
+
+
+
+# [20.2.0](https://github.com/conventional-changelog/commitlint/compare/v20.1.0...v20.2.0) (2025-12-05)
+
+**Note:** Version bump only for package @commitlint/resolve-extends
+
+
+
+
+
+# [20.1.0](https://github.com/conventional-changelog/commitlint/compare/v20.0.0...v20.1.0) (2025-09-30)
+
+
+### Bug Fixes
+
+* **resolve-extends:** add import attribute for JSON config files ([#4551](https://github.com/conventional-changelog/commitlint/issues/4551)) ([82936c9](https://github.com/conventional-changelog/commitlint/commit/82936c90a2845b4f5721eef3c71d6183416d5b78))
+
+
+
+
+
+# [20.0.0](https://github.com/conventional-changelog/commitlint/compare/v19.9.1...v20.0.0) (2025-09-25)
+
+**Note:** Version bump only for package @commitlint/resolve-extends
+
+
+
+
+
+## [19.8.1](https://github.com/conventional-changelog/commitlint/compare/v19.8.0...v19.8.1) (2025-05-08)
+
+**Note:** Version bump only for package @commitlint/resolve-extends
+
+
+
+
+
+# [19.8.0](https://github.com/conventional-changelog/commitlint/compare/v19.7.1...v19.8.0) (2025-03-07)
+
+
+### Performance Improvements
+
+* use `node:` prefix to bypass require.cache call for builtins ([#4302](https://github.com/conventional-changelog/commitlint/issues/4302)) ([0cd8f41](https://github.com/conventional-changelog/commitlint/commit/0cd8f410573fe11383f788b1ceb7e0946143591d))
+
+
+
+
+
+# [19.5.0](https://github.com/conventional-changelog/commitlint/compare/v19.4.1...v19.5.0) (2024-09-11)
+
+**Note:** Version bump only for package @commitlint/resolve-extends
+
+
+
+
+
 # [19.1.0](https://github.com/conventional-changelog/commitlint/compare/v19.0.3...v19.1.0) (2024-03-12)
 
 

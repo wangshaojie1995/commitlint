@@ -1,14 +1,14 @@
-import path from 'path';
+import path from "node:path";
 
 // largely adapted from eslint's plugin system
-const NAMESPACE_REGEX = /^@.*\//iu;
+const NAMESPACE_REGEX = /^@.*\//u;
 // In eslint this is a parameter - we don't need to support the extra options
-const prefix = 'commitlint-plugin';
+const prefix = "commitlint-plugin";
 
 // Replace Windows with posix style paths
 function convertPathToPosix(filepath: string) {
 	const normalizedFilepath = path.normalize(filepath);
-	const posixFilepath = normalizedFilepath.replace(/\\/gu, '/');
+	const posixFilepath = normalizedFilepath.replace(/\\/gu, "/");
 
 	return posixFilepath;
 }
@@ -27,35 +27,26 @@ export function normalizePackageName(name: string) {
 	 * Normalize to Unix first to avoid errors later on.
 	 * https://github.com/eslint/eslint/issues/5644
 	 */
-	if (normalizedName.indexOf('\\') > -1) {
+	if (normalizedName.indexOf("\\") > -1) {
 		normalizedName = convertPathToPosix(normalizedName);
 	}
 
-	if (normalizedName.charAt(0) === '@') {
+	if (normalizedName.charAt(0) === "@") {
 		/**
 		 * it's a scoped package
 		 * package name is the prefix, or just a username
 		 */
-		const scopedPackageShortcutRegex = new RegExp(
-				`^(@[^/]+)(?:/(?:${prefix})?)?$`,
-				'u'
-			),
-			scopedPackageNameRegex = new RegExp(`^${prefix}(-|$)`, 'u');
+		const scopedPackageShortcutRegex = new RegExp(`^(@[^/]+)(?:/(?:${prefix})?)?$`, "u"),
+			scopedPackageNameRegex = new RegExp(`^${prefix}(?:-|$)`, "u");
 
 		if (scopedPackageShortcutRegex.test(normalizedName)) {
-			normalizedName = normalizedName.replace(
-				scopedPackageShortcutRegex,
-				`$1/${prefix}`
-			);
-		} else if (!scopedPackageNameRegex.test(normalizedName.split('/')[1])) {
+			normalizedName = normalizedName.replace(scopedPackageShortcutRegex, `$1/${prefix}`);
+		} else if (!scopedPackageNameRegex.test(normalizedName.split("/")[1])) {
 			/**
 			 * for scoped packages, insert the prefix after the first / unless
 			 * the path is already @scope/eslint or @scope/eslint-xxx-yyy
 			 */
-			normalizedName = normalizedName.replace(
-				/^@([^/]+)\/(.*)$/u,
-				`@$1/${prefix}-$2`
-			);
+			normalizedName = normalizedName.replace(/^@([^/]+)\/(.*)$/u, `@$1/${prefix}-$2`);
 		}
 	} else if (normalizedName.indexOf(`${prefix}-`) !== 0) {
 		normalizedName = `${prefix}-${normalizedName}`;
@@ -70,14 +61,14 @@ export function normalizePackageName(name: string) {
  * @returns {string} The term without prefix.
  */
 export function getShorthandName(fullname: string) {
-	if (fullname[0] === '@') {
-		let matchResult = new RegExp(`^(@[^/]+)/${prefix}$`, 'u').exec(fullname);
+	if (fullname[0] === "@") {
+		let matchResult = new RegExp(`^(@[^/]+)/${prefix}$`, "u").exec(fullname);
 
 		if (matchResult) {
 			return matchResult[1];
 		}
 
-		matchResult = new RegExp(`^(@[^/]+)/${prefix}-(.+)$`, 'u').exec(fullname);
+		matchResult = new RegExp(`^(@[^/]+)/${prefix}-(.+)$`, "u").exec(fullname);
 		if (matchResult) {
 			return `${matchResult[1]}/${matchResult[2]}`;
 		}
@@ -91,10 +82,10 @@ export function getShorthandName(fullname: string) {
 /**
  * Gets the scope (namespace) of a term.
  * @param {string} term The term which may have the namespace.
- * @returns {string} The namepace of the term if it has one.
+ * @returns {string} The namespace of the term if it has one.
  */
 export function getNamespaceFromTerm(term: string) {
-	const match = term.match(NAMESPACE_REGEX);
+	const match = NAMESPACE_REGEX.exec(term);
 
-	return match ? match[0] : '';
+	return match ? match[0] : "";
 }

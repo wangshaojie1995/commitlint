@@ -1,13 +1,7 @@
-import {existsSync, readFileSync} from 'fs';
-import path from 'path';
+import path from "node:path";
 
-import {
-	cosmiconfig,
-	defaultLoadersSync,
-	type Loader,
-	defaultLoaders,
-} from 'cosmiconfig';
-import {TypeScriptLoader} from 'cosmiconfig-typescript-loader';
+import { cosmiconfig, type Loader, defaultLoaders } from "cosmiconfig";
+import { createJiti, type Jiti } from "jiti";
 
 export interface LoadConfigResult {
 	config: unknown;
@@ -15,35 +9,34 @@ export interface LoadConfigResult {
 	isEmpty?: boolean;
 }
 
-const moduleName = 'commitlint';
-const searchStrategy = 'global';
+const moduleName = "commitlint";
+const searchStrategy = "global";
 
 export async function loadConfig(
 	cwd: string,
-	configPath?: string
+	configPath?: string,
 ): Promise<LoadConfigResult | null> {
-	let tsLoaderInstance: Loader | undefined;
-	const tsLoader: Loader = (...args) => {
-		if (!tsLoaderInstance) {
-			tsLoaderInstance = TypeScriptLoader();
+	let jiti: Jiti | undefined;
+	const tsLoader: Loader = async (filepath) => {
+		jiti ??= createJiti("", { interopDefault: true });
+		try {
+			const result = await jiti.import<{ default?: unknown }>(filepath);
+			return result.default || result;
+		} catch (error) {
+			if (error instanceof Error) {
+				error.message = `TypeScriptLoader failed to compile TypeScript:\n${error.message}`;
+			}
+			throw error;
 		}
-		return tsLoaderInstance(...args);
 	};
-
-	// If dynamic await is supported (Node >= v20.8.0) or directory uses ESM, support
-	// async js/cjs loaders (dynamic import). Otherwise, use synchronous js/cjs loaders.
-	const loaders =
-		isDynamicAwaitSupported() || isEsmModule(cwd)
-			? defaultLoaders
-			: defaultLoadersSync;
 
 	const explorer = cosmiconfig(moduleName, {
 		searchStrategy,
 		searchPlaces: [
 			// cosmiconfig overrides default searchPlaces if any new search place is added (For e.g. `*.ts` files),
 			// we need to manually merge default searchPlaces from https://github.com/davidtheclark/cosmiconfig#searchplaces
-			'package.json',
-			'package.yaml',
+			"package.json",
+			"package.yaml",
 			`.${moduleName}rc`,
 			`.${moduleName}rc.json`,
 			`.${moduleName}rc.yaml`,
@@ -58,14 +51,17 @@ export async function loadConfig(
 			// files supported by TypescriptLoader
 			`.${moduleName}rc.ts`,
 			`.${moduleName}rc.cts`,
+			`.${moduleName}rc.mts`,
 			`${moduleName}.config.ts`,
 			`${moduleName}.config.cts`,
+			`${moduleName}.config.mts`,
 		],
 		loaders: {
-			'.ts': tsLoader,
-			'.cts': tsLoader,
-			'.cjs': loaders['.cjs'],
-			'.js': loaders['.js'],
+			".ts": tsLoader,
+			".cts": tsLoader,
+			".mts": tsLoader,
+			".cjs": defaultLoaders[".cjs"],
+			".js": defaultLoaders[".js"],
 		},
 	});
 
@@ -80,27 +76,3 @@ export async function loadConfig(
 
 	return null;
 }
-
-// See the following issues for more context, contributing to failing Jest tests:
-//  - Issue: https://github.com/nodejs/node/issues/40058
-//  - Resolution: https://github.com/nodejs/node/pull/48510 (Node v20.8.0)
-export const isDynamicAwaitSupported = () => {
-	const [major, minor] = process.version
-		.replace('v', '')
-		.split('.')
-		.map((val) => parseInt(val));
-
-	return major >= 20 && minor >= 8;
-};
-
-// Is the given directory set up to use ESM (ECMAScript Modules)?
-export const isEsmModule = (cwd: string) => {
-	const packagePath = path.join(cwd, 'package.json');
-
-	if (!existsSync(packagePath)) {
-		return false;
-	}
-
-	const packageJSON = readFileSync(packagePath, {encoding: 'utf-8'});
-	return JSON.parse(packageJSON)?.type === 'module';
-};

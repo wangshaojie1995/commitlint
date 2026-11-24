@@ -1,32 +1,37 @@
-import path from 'path';
+import path from "node:path";
 
-import {validateConfig} from '@commitlint/config-validator';
-import executeRule from '@commitlint/execute-rule';
+import { validateConfig } from "@commitlint/config-validator";
+import executeRule from "@commitlint/execute-rule";
 import resolveExtends, {
 	resolveFrom,
 	resolveFromSilent,
 	resolveGlobalSilent,
 	loadParserPreset,
-} from '@commitlint/resolve-extends';
+} from "@commitlint/resolve-extends";
 import {
 	LoadOptions,
 	PluginRecords,
 	QualifiedConfig,
 	QualifiedRules,
 	UserConfig,
-} from '@commitlint/types';
-import isPlainObject from 'lodash.isplainobject';
-import merge from 'lodash.merge';
-import uniq from 'lodash.uniq';
+} from "@commitlint/types";
+import isPlainObject from "is-plain-obj";
+import { mergeWith } from "es-toolkit/compat";
 
-import {loadConfig} from './utils/load-config.js';
-import {loadParserOpts} from './utils/load-parser-opts.js';
-import loadPlugin from './utils/load-plugin.js';
+import { loadConfig } from "./utils/load-config.js";
+import { loadParserOpts } from "./utils/load-parser-opts.js";
+import loadPlugin from "./utils/load-plugin.js";
 
 /**
- * formatter should be kept as is when unable to resolve it from config directory
+ * Resolve relative formatter paths (e.g. "./my-formatter.js") from the
+ * config directory. Package specifiers and absolute paths are kept as-is
+ * so the runtime resolves them via standard module resolution at import
+ * time.
  */
 const resolveFormatter = (formatter: string, parent?: string): string => {
+	if (!formatter.startsWith(".")) {
+		return formatter;
+	}
 	try {
 		return resolveFrom(formatter, parent);
 	} catch (error) {
@@ -36,35 +41,42 @@ const resolveFormatter = (formatter: string, parent?: string): string => {
 
 export default async function load(
 	seed: UserConfig = {},
-	options: LoadOptions = {}
+	options: LoadOptions = {},
 ): Promise<QualifiedConfig> {
-	const cwd = typeof options.cwd === 'undefined' ? process.cwd() : options.cwd;
+	const cwd = typeof options.cwd === "undefined" ? process.cwd() : options.cwd;
 	const loaded = await loadConfig(cwd, options.file);
 	const baseDirectory = loaded?.filepath ? path.dirname(loaded.filepath) : cwd;
 	const configFilePath = loaded?.filepath;
 	let config: UserConfig = {};
 	if (loaded) {
-		validateConfig(loaded.filepath || '', loaded.config);
-		config = loaded.config;
+		const resolvedConfig =
+			typeof loaded.config === "function" ? await loaded.config() : await loaded.config;
+		validateConfig(loaded.filepath || "", resolvedConfig);
+		config = resolvedConfig;
 	}
 
 	// Merge passed config with file based options
-	config = merge(
+	// A non-empty array replaces the one it overrides instead of being merged into it index by index.
+	// Emptying the target lets the default merge copy the values, so the result never aliases its sources.
+	config = mergeWith(
 		{
 			extends: [],
 			plugins: [],
 			rules: {},
 		},
 		config,
-		seed
+		seed,
+		(objValue: unknown, srcValue: unknown) => {
+			if (Array.isArray(objValue) && Array.isArray(srcValue) && srcValue.length > 0) {
+				objValue.length = 0;
+			}
+			return undefined;
+		},
 	);
 
 	// Resolve parserPreset key
-	if (typeof config.parserPreset === 'string') {
-		const resolvedParserPreset = resolveFrom(
-			config.parserPreset,
-			configFilePath
-		);
+	if (typeof config.parserPreset === "string") {
+		const resolvedParserPreset = resolveFrom(config.parserPreset, configFilePath);
 
 		config.parserPreset = {
 			name: config.parserPreset,
@@ -74,34 +86,34 @@ export default async function load(
 
 	// Resolve extends key
 	const extended = await resolveExtends(config, {
-		prefix: 'commitlint-config',
+		prefix: "commitlint-config",
 		cwd: baseDirectory,
 		parserPreset: await config.parserPreset,
 	});
 
-	if (!extended.formatter || typeof extended.formatter !== 'string') {
-		extended.formatter = '@commitlint/format';
+	if (!extended.formatter || typeof extended.formatter !== "string") {
+		extended.formatter = "@commitlint/format";
 	}
 
 	let plugins: PluginRecords = {};
 	if (Array.isArray(extended.plugins)) {
-		for (const plugin of uniq(extended.plugins)) {
-			if (typeof plugin === 'string') {
-				plugins = await loadPlugin(
-					plugins,
-					plugin,
-					process.env.DEBUG === 'true'
-				);
+		const deduplicatedPlugins = [...new Set(extended.plugins)];
+		let localIndex = 0;
+		for (const plugin of deduplicatedPlugins) {
+			if (typeof plugin === "string") {
+				plugins = await loadPlugin(plugins, plugin, {
+					debug: process.env.DEBUG === "true",
+				});
 			} else {
-				plugins.local = plugin;
+				// The first keeps `local` for compatibility; `:` can't appear in npm plugin names.
+				plugins[localIndex === 0 ? "local" : `local:${localIndex}`] = plugin;
+				localIndex++;
 			}
 		}
 	}
 
 	const rules = (
-		await Promise.all(
-			Object.entries(extended.rules || {}).map((entry) => executeRule(entry))
-		)
+		await Promise.all(Object.entries(extended.rules || {}).map((entry) => executeRule(entry)))
 	).reduce<QualifiedRules>((registry, item) => {
 		// type of `item` can be null, but Object.entries always returns key pair
 		const [key, value] = item!;
@@ -110,21 +122,20 @@ export default async function load(
 	}, {});
 
 	const helpUrl =
-		typeof extended.helpUrl === 'string'
+		typeof extended.helpUrl === "string"
 			? extended.helpUrl
-			: typeof config.helpUrl === 'string'
-			? config.helpUrl
-			: 'https://github.com/conventional-changelog/commitlint/#what-is-commitlint';
+			: typeof config.helpUrl === "string"
+				? config.helpUrl
+				: "https://github.com/conventional-changelog/commitlint/#what-is-commitlint";
 
-	const prompt =
-		extended.prompt && isPlainObject(extended.prompt) ? extended.prompt : {};
+	const prompt = extended.prompt && isPlainObject(extended.prompt) ? extended.prompt : {};
 
 	return {
 		extends: Array.isArray(extended.extends)
 			? extended.extends
-			: typeof extended.extends === 'string'
-			? [extended.extends]
-			: [],
+			: typeof extended.extends === "string"
+				? [extended.extends]
+				: [],
 		// Resolve config-relative formatter module
 		formatter: resolveFormatter(extended.formatter, configFilePath),
 		// Resolve parser-opts from preset
@@ -138,4 +149,4 @@ export default async function load(
 	};
 }
 
-export {resolveFrom, resolveFromSilent, resolveGlobalSilent};
+export { resolveFrom, resolveFromSilent, resolveGlobalSilent };
